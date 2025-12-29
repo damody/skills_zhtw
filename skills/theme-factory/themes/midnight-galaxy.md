@@ -1,19 +1,19 @@
-# Midnight Galaxy
+# 午夜星河
 
-A dramatic and cosmic theme with deep purples and mystical tones for impactful presentations.
+一個戲劇性的宇宙主題，採用深紫色和神秘色調，適合具有衝擊力的簡報。
 
-## Color Palette
+## 色彩調色盤
 
-- **Deep Purple**: `#2b1e3e` - Rich dark base
-- **Cosmic Blue**: `#4a4e8f` - Mystical mid-tone
-- **Lavender**: `#a490c2` - Soft accent color
-- **Silver**: `#e6e6fa` - Light highlights and text
+- **深紫色**: `#2b1e3e` - 濃郁的深色底色
+- **宇宙藍**: `#4a4e8f` - 神秘的中間色調
+- **薰衣草色**: `#a490c2` - 柔和的強調色
+- **銀色**: `#e6e6fa` - 淺色亮點和文字
 
-## Typography
+## 字體排版
 
-- **Headers**: FreeSans Bold
-- **Body Text**: FreeSans
+- **標題**: FreeSans Bold
+- **內文**: FreeSans
 
-## Best Used For
+## 最適用於
 
-Entertainment industry, gaming presentations, nightlife venues, luxury brands, creative agencies.
+娛樂產業、遊戲簡報、夜生活場所、奢華品牌、創意公司。

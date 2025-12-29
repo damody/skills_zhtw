@@ -1,19 +1,19 @@
-# Forest Canopy
+# 森林樹冠
 
-A natural and grounded theme featuring earth tones inspired by dense forest environments.
+一個自然且穩重的主題，採用受茂密森林環境啟發的大地色調。
 
-## Color Palette
+## 色彩調色盤
 
-- **Forest Green**: `#2d4a2b` - Primary dark green
-- **Sage**: `#7d8471` - Muted green accent
-- **Olive**: `#a4ac86` - Light accent color
-- **Ivory**: `#faf9f6` - Backgrounds and text
+- **森林綠**: `#2d4a2b` - 主要深綠色
+- **鼠尾草綠**: `#7d8471` - 柔和的綠色強調
+- **橄欖綠**: `#a4ac86` - 淺色強調色
+- **象牙色**: `#faf9f6` - 背景和文字
 
-## Typography
+## 字體排版
 
-- **Headers**: FreeSerif Bold
-- **Body Text**: FreeSans
+- **標題**: FreeSerif Bold
+- **內文**: FreeSans
 
-## Best Used For
+## 最適用於
 
-Environmental presentations, sustainability reports, outdoor brands, wellness content, organic products.
+環保簡報、永續發展報告、戶外品牌、健康養生內容、有機產品。

@@ -1,19 +1,19 @@
-# Ocean Depths
+# 海洋深處
 
-A professional and calming maritime theme that evokes the serenity of deep ocean waters.
+一個專業且平靜的海洋主題，喚起深海的寧靜感。
 
-## Color Palette
+## 色彩調色盤
 
-- **Deep Navy**: `#1a2332` - Primary background color
-- **Teal**: `#2d8b8b` - Accent color for highlights and emphasis
-- **Seafoam**: `#a8dadc` - Secondary accent for lighter elements
-- **Cream**: `#f1faee` - Text and light backgrounds
+- **深海軍藍**: `#1a2332` - 主要背景色
+- **藍綠色**: `#2d8b8b` - 亮點和強調的強調色
+- **海沫綠**: `#a8dadc` - 較淺元素的次要強調色
+- **奶油色**: `#f1faee` - 文字和淺色背景
 
-## Typography
+## 字體排版
 
-- **Headers**: DejaVu Sans Bold
-- **Body Text**: DejaVu Sans
+- **標題**: DejaVu Sans Bold
+- **內文**: DejaVu Sans
 
-## Best Used For
+## 最適用於
 
-Corporate presentations, financial reports, professional consulting decks, trust-building content.
+企業簡報、財務報告、專業顧問簡報、建立信任的內容。

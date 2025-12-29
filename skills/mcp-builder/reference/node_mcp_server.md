@@ -1,14 +1,14 @@
-# Node/TypeScript MCP Server Implementation Guide
+# Node/TypeScript MCP 伺服器實作指南
 
-## Overview
+## 概述
 
-This document provides Node/TypeScript-specific best practices and examples for implementing MCP servers using the MCP TypeScript SDK. It covers project structure, server setup, tool registration patterns, input validation with Zod, error handling, and complete working examples.
+本文件提供使用 MCP TypeScript SDK 實作 MCP 伺服器的 Node/TypeScript 特定最佳實踐和範例。涵蓋專案結構、伺服器設定、工具註冊模式、使用 Zod 的輸入驗證、錯誤處理，以及完整的工作範例。
 
 ---
 
-## Quick Reference
+## 快速參考
 
-### Key Imports
+### 關鍵匯入
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -17,7 +17,7 @@ import express from "express";
 import { z } from "zod";
 ```
 
-### Server Initialization
+### 伺服器初始化
 ```typescript
 const server = new McpServer({
   name: "service-mcp-server",
@@ -25,7 +25,7 @@ const server = new McpServer({
 });
 ```
 
-### Tool Registration Pattern
+### 工具註冊模式
 ```typescript
 server.registerTool(
   "tool_name",
@@ -39,7 +39,7 @@ server.registerTool(
     const output = { result: `Processed: ${param}` };
     return {
       content: [{ type: "text", text: JSON.stringify(output) }],
-      structuredContent: output // Modern pattern for structured data
+      structuredContent: output // 結構化資料的現代模式
     };
   }
 );
@@ -49,34 +49,34 @@ server.registerTool(
 
 ## MCP TypeScript SDK
 
-The official MCP TypeScript SDK provides:
-- `McpServer` class for server initialization
-- `registerTool` method for tool registration
-- Zod schema integration for runtime input validation
-- Type-safe tool handler implementations
+官方 MCP TypeScript SDK 提供：
+- 用於伺服器初始化的 `McpServer` 類別
+- 用於工具註冊的 `registerTool` 方法
+- Zod schema 整合用於執行時輸入驗證
+- 型別安全的工具處理器實作
 
-**IMPORTANT - Use Modern APIs Only:**
-- **DO use**: `server.registerTool()`, `server.registerResource()`, `server.registerPrompt()`
-- **DO NOT use**: Old deprecated APIs such as `server.tool()`, `server.setRequestHandler(ListToolsRequestSchema, ...)`, or manual handler registration
-- The `register*` methods provide better type safety, automatic schema handling, and are the recommended approach
+**重要 - 僅使用現代 API：**
+- **應使用**：`server.registerTool()`、`server.registerResource()`、`server.registerPrompt()`
+- **不要使用**：舊的已棄用 API，如 `server.tool()`、`server.setRequestHandler(ListToolsRequestSchema, ...)` 或手動處理器註冊
+- `register*` 方法提供更好的型別安全性、自動 schema 處理，且是推薦的方法
 
-See the MCP SDK documentation in the references for complete details.
+請參閱參考文件中的 MCP SDK 文件以獲取完整詳情。
 
-## Server Naming Convention
+## 伺服器命名慣例
 
-Node/TypeScript MCP servers must follow this naming pattern:
-- **Format**: `{service}-mcp-server` (lowercase with hyphens)
-- **Examples**: `github-mcp-server`, `jira-mcp-server`, `stripe-mcp-server`
+Node/TypeScript MCP 伺服器必須遵循此命名模式：
+- **格式**：`{service}-mcp-server`（小寫加連字號）
+- **範例**：`github-mcp-server`、`jira-mcp-server`、`stripe-mcp-server`
 
-The name should be:
-- General (not tied to specific features)
-- Descriptive of the service/API being integrated
-- Easy to infer from the task description
-- Without version numbers or dates
+名稱應該：
+- 通用（不綁定特定功能）
+- 能描述正在整合的服務/API
+- 容易從任務描述推斷
+- 不包含版本號或日期
 
-## Project Structure
+## 專案結構
 
-Create the following structure for Node/TypeScript MCP servers:
+為 Node/TypeScript MCP 伺服器建立以下結構：
 
 ```
 {service}-mcp-server/
@@ -84,34 +84,34 @@ Create the following structure for Node/TypeScript MCP servers:
 ├── tsconfig.json
 ├── README.md
 ├── src/
-│   ├── index.ts          # Main entry point with McpServer initialization
-│   ├── types.ts          # TypeScript type definitions and interfaces
-│   ├── tools/            # Tool implementations (one file per domain)
-│   ├── services/         # API clients and shared utilities
-│   ├── schemas/          # Zod validation schemas
-│   └── constants.ts      # Shared constants (API_URL, CHARACTER_LIMIT, etc.)
-└── dist/                 # Built JavaScript files (entry point: dist/index.js)
+│   ├── index.ts          # 主要進入點，包含 McpServer 初始化
+│   ├── types.ts          # TypeScript 型別定義和介面
+│   ├── tools/            # 工具實作（每個領域一個檔案）
+│   ├── services/         # API 客戶端和共用工具程式
+│   ├── schemas/          # Zod 驗證 schema
+│   └── constants.ts      # 共用常數（API_URL、CHARACTER_LIMIT 等）
+└── dist/                 # 建置的 JavaScript 檔案（進入點：dist/index.js）
 ```
 
-## Tool Implementation
+## 工具實作
 
-### Tool Naming
+### 工具命名
 
-Use snake_case for tool names (e.g., "search_users", "create_project", "get_channel_info") with clear, action-oriented names.
+使用 snake_case 命名工具（例如 "search_users"、"create_project"、"get_channel_info"），並使用清晰、以動作為導向的名稱。
 
-**Avoid Naming Conflicts**: Include the service context to prevent overlaps:
-- Use "slack_send_message" instead of just "send_message"
-- Use "github_create_issue" instead of just "create_issue"
-- Use "asana_list_tasks" instead of just "list_tasks"
+**避免命名衝突**：包含服務上下文以防止重疊：
+- 使用 "slack_send_message" 而不是僅 "send_message"
+- 使用 "github_create_issue" 而不是僅 "create_issue"
+- 使用 "asana_list_tasks" 而不是僅 "list_tasks"
 
-### Tool Structure
+### 工具結構
 
-Tools are registered using the `registerTool` method with the following requirements:
-- Use Zod schemas for runtime input validation and type safety
-- The `description` field must be explicitly provided - JSDoc comments are NOT automatically extracted
-- Explicitly provide `title`, `description`, `inputSchema`, and `annotations`
-- The `inputSchema` must be a Zod schema object (not a JSON schema)
-- Type all parameters and return values explicitly
+工具使用 `registerTool` 方法註冊，有以下需求：
+- 使用 Zod schema 進行執行時輸入驗證和型別安全
+- `description` 欄位必須明確提供 - JSDoc 註解不會自動提取
+- 明確提供 `title`、`description`、`inputSchema` 和 `annotations`
+- `inputSchema` 必須是 Zod schema 物件（不是 JSON schema）
+- 明確定義所有參數和回傳值的型別
 
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -122,7 +122,7 @@ const server = new McpServer({
   version: "1.0.0"
 });
 
-// Zod schema for input validation
+// 用於輸入驗證的 Zod schema
 const UserSearchInputSchema = z.object({
   query: z.string()
     .min(2, "Query must be at least 2 characters")
@@ -144,7 +144,7 @@ const UserSearchInputSchema = z.object({
     .describe("Output format: 'markdown' for human-readable or 'json' for machine-readable")
 }).strict();
 
-// Type definition from Zod schema
+// 從 Zod schema 推導的型別定義
 type UserSearchInput = z.infer<typeof UserSearchInputSchema>;
 
 server.registerTool(
@@ -198,8 +198,8 @@ Error Handling:
   },
   async (params: UserSearchInput) => {
     try {
-      // Input validation is handled by Zod schema
-      // Make API request using validated parameters
+      // 輸入驗證由 Zod schema 處理
+      // 使用驗證過的參數發送 API 請求
       const data = await makeApiRequest<any>(
         "users/search",
         "GET",
@@ -223,7 +223,7 @@ Error Handling:
         };
       }
 
-      // Prepare structured output
+      // 準備結構化輸出
       const output = {
         total,
         count: users.length,
@@ -241,7 +241,7 @@ Error Handling:
         } : {})
       };
 
-      // Format text representation based on requested format
+      // 根據請求的格式格式化文字表示
       let textContent: string;
       if (params.response_format === ResponseFormat.MARKDOWN) {
         const lines = [`# User Search Results: '${params.query}'`, "",
@@ -259,7 +259,7 @@ Error Handling:
 
       return {
         content: [{ type: "text", text: textContent }],
-        structuredContent: output // Modern pattern for structured data
+        structuredContent: output // 結構化資料的現代模式
       };
     } catch (error) {
       return {
@@ -273,14 +273,14 @@ Error Handling:
 );
 ```
 
-## Zod Schemas for Input Validation
+## 用於輸入驗證的 Zod Schema
 
-Zod provides runtime type validation:
+Zod 提供執行時型別驗證：
 
 ```typescript
 import { z } from "zod";
 
-// Basic schema with validation
+// 帶驗證的基本 schema
 const CreateUserSchema = z.object({
   name: z.string()
     .min(1, "Name is required")
@@ -291,9 +291,9 @@ const CreateUserSchema = z.object({
     .int("Age must be a whole number")
     .min(0, "Age cannot be negative")
     .max(150, "Age cannot be greater than 150")
-}).strict();  // Use .strict() to forbid extra fields
+}).strict();  // 使用 .strict() 禁止額外欄位
 
-// Enums
+// 列舉
 enum ResponseFormat {
   MARKDOWN = "markdown",
   JSON = "json"
@@ -305,7 +305,7 @@ const SearchSchema = z.object({
     .describe("Output format")
 });
 
-// Optional fields with defaults
+// 帶預設值的可選欄位
 const PaginationSchema = z.object({
   limit: z.number()
     .int()
@@ -321,9 +321,9 @@ const PaginationSchema = z.object({
 });
 ```
 
-## Response Format Options
+## 回應格式選項
 
-Support multiple output formats for flexibility:
+支援多種輸出格式以提供靈活性：
 
 ```typescript
 enum ResponseFormat {
@@ -339,21 +339,21 @@ const inputSchema = z.object({
 });
 ```
 
-**Markdown format**:
-- Use headers, lists, and formatting for clarity
-- Convert timestamps to human-readable format
-- Show display names with IDs in parentheses
-- Omit verbose metadata
-- Group related information logically
+**Markdown 格式**：
+- 使用標題、清單和格式以提高清晰度
+- 將時間戳轉換為人類可讀格式
+- 顯示名稱並在括號中附上 ID
+- 省略冗長的中繼資料
+- 邏輯地分組相關資訊
 
-**JSON format**:
-- Return complete, structured data suitable for programmatic processing
-- Include all available fields and metadata
-- Use consistent field names and types
+**JSON 格式**：
+- 回傳完整的結構化資料，適合程式化處理
+- 包含所有可用欄位和中繼資料
+- 使用一致的欄位名稱和型別
 
-## Pagination Implementation
+## 分頁實作
 
-For tools that list resources:
+對於列出資源的工具：
 
 ```typescript
 const ListSchema = z.object({
@@ -379,18 +379,18 @@ async function listItems(params: z.infer<typeof ListSchema>) {
 }
 ```
 
-## Character Limits and Truncation
+## 字元限制和截斷
 
-Add a CHARACTER_LIMIT constant to prevent overwhelming responses:
+加入 CHARACTER_LIMIT 常數以防止回應過大：
 
 ```typescript
-// At module level in constants.ts
-export const CHARACTER_LIMIT = 25000;  // Maximum response size in characters
+// 在 constants.ts 的模組層級
+export const CHARACTER_LIMIT = 25000;  // 回應大小上限（字元數）
 
 async function searchTool(params: SearchInput) {
   let result = generateResponse(data);
 
-  // Check character limit and truncate if needed
+  // 檢查字元限制，如需要則截斷
   if (result.length > CHARACTER_LIMIT) {
     const truncatedData = data.slice(0, Math.max(1, data.length / 2));
     response.data = truncatedData;
@@ -405,9 +405,9 @@ async function searchTool(params: SearchInput) {
 }
 ```
 
-## Error Handling
+## 錯誤處理
 
-Provide clear, actionable error messages:
+提供清晰、可操作的錯誤訊息：
 
 ```typescript
 import axios, { AxiosError } from "axios";
@@ -433,12 +433,12 @@ function handleApiError(error: unknown): string {
 }
 ```
 
-## Shared Utilities
+## 共用工具程式
 
-Extract common functionality into reusable functions:
+將常用功能提取為可重用函式：
 
 ```typescript
-// Shared API request function
+// 共用 API 請求函式
 async function makeApiRequest<T>(
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
@@ -464,36 +464,36 @@ async function makeApiRequest<T>(
 }
 ```
 
-## Async/Await Best Practices
+## Async/Await 最佳實踐
 
-Always use async/await for network requests and I/O operations:
+對於網路請求和 I/O 操作始終使用 async/await：
 
 ```typescript
-// Good: Async network request
+// 好：非同步網路請求
 async function fetchData(resourceId: string): Promise<ResourceData> {
   const response = await axios.get(`${API_URL}/resource/${resourceId}`);
   return response.data;
 }
 
-// Bad: Promise chains
+// 不好：Promise 鏈
 function fetchData(resourceId: string): Promise<ResourceData> {
   return axios.get(`${API_URL}/resource/${resourceId}`)
-    .then(response => response.data);  // Harder to read and maintain
+    .then(response => response.data);  // 較難閱讀和維護
 }
 ```
 
-## TypeScript Best Practices
+## TypeScript 最佳實踐
 
-1. **Use Strict TypeScript**: Enable strict mode in tsconfig.json
-2. **Define Interfaces**: Create clear interface definitions for all data structures
-3. **Avoid `any`**: Use proper types or `unknown` instead of `any`
-4. **Zod for Runtime Validation**: Use Zod schemas to validate external data
-5. **Type Guards**: Create type guard functions for complex type checking
-6. **Error Handling**: Always use try-catch with proper error type checking
-7. **Null Safety**: Use optional chaining (`?.`) and nullish coalescing (`??`)
+1. **使用嚴格 TypeScript**：在 tsconfig.json 中啟用 strict 模式
+2. **定義介面**：為所有資料結構建立清晰的介面定義
+3. **避免 `any`**：使用適當的型別或 `unknown` 而不是 `any`
+4. **Zod 用於執行時驗證**：使用 Zod schema 驗證外部資料
+5. **型別守衛**：為複雜型別檢查建立型別守衛函式
+6. **錯誤處理**：始終使用帶有適當錯誤型別檢查的 try-catch
+7. **空值安全**：使用可選鏈結（`?.`）和空值合併（`??`）
 
 ```typescript
-// Good: Type-safe with Zod and interfaces
+// 好：使用 Zod 和介面的型別安全
 interface UserResponse {
   id: string;
   name: string;
@@ -514,16 +514,16 @@ type User = z.infer<typeof UserSchema>;
 
 async function getUser(id: string): Promise<User> {
   const data = await apiCall(`/users/${id}`);
-  return UserSchema.parse(data);  // Runtime validation
+  return UserSchema.parse(data);  // 執行時驗證
 }
 
-// Bad: Using any
+// 不好：使用 any
 async function getUser(id: string): Promise<any> {
-  return await apiCall(`/users/${id}`);  // No type safety
+  return await apiCall(`/users/${id}`);  // 沒有型別安全
 }
 ```
 
-## Package Configuration
+## 套件配置
 
 ### package.json
 
@@ -581,15 +581,15 @@ async function getUser(id: string): Promise<any> {
 }
 ```
 
-## Complete Example
+## 完整範例
 
 ```typescript
 #!/usr/bin/env node
 /**
- * MCP Server for Example Service.
+ * Example Service 的 MCP 伺服器。
  *
- * This server provides tools to interact with Example API, including user search,
- * project management, and data export capabilities.
+ * 此伺服器提供與 Example API 互動的工具，包括使用者搜尋、
+ * 專案管理和資料匯出功能。
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -597,17 +597,17 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import axios, { AxiosError } from "axios";
 
-// Constants
+// 常數
 const API_BASE_URL = "https://api.example.com/v1";
 const CHARACTER_LIMIT = 25000;
 
-// Enums
+// 列舉
 enum ResponseFormat {
   MARKDOWN = "markdown",
   JSON = "json"
 }
 
-// Zod schemas
+// Zod schema
 const UserSearchInputSchema = z.object({
   query: z.string()
     .min(2, "Query must be at least 2 characters")
@@ -631,7 +631,7 @@ const UserSearchInputSchema = z.object({
 
 type UserSearchInput = z.infer<typeof UserSearchInputSchema>;
 
-// Shared utility functions
+// 共用工具函式
 async function makeApiRequest<T>(
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
@@ -676,18 +676,18 @@ function handleApiError(error: unknown): string {
   return `Error: Unexpected error occurred: ${error instanceof Error ? error.message : String(error)}`;
 }
 
-// Create MCP server instance
+// 建立 MCP 伺服器實例
 const server = new McpServer({
   name: "example-mcp",
   version: "1.0.0"
 });
 
-// Register tools
+// 註冊工具
 server.registerTool(
   "example_search_users",
   {
     title: "Search Example Users",
-    description: `[Full description as shown above]`,
+    description: `[如上所示的完整描述]`,
     inputSchema: UserSearchInputSchema,
     annotations: {
       readOnlyHint: true,
@@ -697,12 +697,12 @@ server.registerTool(
     }
   },
   async (params: UserSearchInput) => {
-    // Implementation as shown above
+    // 如上所示的實作
   }
 );
 
-// Main function
-// For stdio (local):
+// 主函式
+// 用於 stdio（本機）：
 async function runStdio() {
   if (!process.env.EXAMPLE_API_KEY) {
     console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
@@ -714,7 +714,7 @@ async function runStdio() {
   console.error("MCP server running via stdio");
 }
 
-// For streamable HTTP (remote):
+// 用於 streamable HTTP（遠端）：
 async function runHTTP() {
   if (!process.env.EXAMPLE_API_KEY) {
     console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
@@ -740,7 +740,7 @@ async function runHTTP() {
   });
 }
 
-// Choose transport based on environment
+// 根據環境選擇傳輸
 const transport = process.env.TRANSPORT || 'stdio';
 if (transport === 'http') {
   runHTTP().catch(error => {
@@ -757,16 +757,16 @@ if (transport === 'http') {
 
 ---
 
-## Advanced MCP Features
+## 進階 MCP 功能
 
-### Resource Registration
+### 資源註冊
 
-Expose data as resources for efficient, URI-based access:
+將資料公開為資源以實現高效、基於 URI 的存取：
 
 ```typescript
 import { ResourceTemplate } from "@modelcontextprotocol/sdk/types.js";
 
-// Register a resource with URI template
+// 使用 URI 範本註冊資源
 server.registerResource(
   {
     uri: "file://documents/{name}",
@@ -775,7 +775,7 @@ server.registerResource(
     mimeType: "text/plain"
   },
   async (uri: string) => {
-    // Extract parameter from URI
+    // 從 URI 提取參數
     const match = uri.match(/^file:\/\/documents\/(.+)$/);
     if (!match) {
       throw new Error("Invalid URI format");
@@ -794,7 +794,7 @@ server.registerResource(
   }
 );
 
-// List available resources dynamically
+// 動態列出可用資源
 server.registerResourceList(async () => {
   const documents = await getAvailableDocuments();
   return {
@@ -808,17 +808,17 @@ server.registerResourceList(async () => {
 });
 ```
 
-**When to use Resources vs Tools:**
-- **Resources**: For data access with simple URI-based parameters
-- **Tools**: For complex operations requiring validation and business logic
-- **Resources**: When data is relatively static or template-based
-- **Tools**: When operations have side effects or complex workflows
+**何時使用資源 vs 工具：**
+- **資源**：用於具有簡單基於 URI 參數的資料存取
+- **工具**：用於需要驗證和業務邏輯的複雜操作
+- **資源**：當資料相對靜態或基於範本時
+- **工具**：當操作有副作用或複雜工作流程時
 
-### Transport Options
+### 傳輸選項
 
-The TypeScript SDK supports two main transport mechanisms:
+TypeScript SDK 支援兩種主要傳輸機制：
 
-#### Streamable HTTP (Recommended for Remote Servers)
+#### Streamable HTTP（推薦用於遠端伺服器）
 
 ```typescript
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -828,7 +828,7 @@ const app = express();
 app.use(express.json());
 
 app.post('/mcp', async (req, res) => {
-  // Create new transport for each request (stateless, prevents request ID collisions)
+  // 為每個請求建立新的傳輸（無狀態，防止請求 ID 衝突）
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true
@@ -843,7 +843,7 @@ app.post('/mcp', async (req, res) => {
 app.listen(3000);
 ```
 
-#### stdio (For Local Integrations)
+#### stdio（用於本機整合）
 
 ```typescript
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -852,119 +852,119 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 ```
 
-**Transport selection:**
-- **Streamable HTTP**: Web services, remote access, multiple clients
-- **stdio**: Command-line tools, local development, subprocess integration
+**傳輸選擇：**
+- **Streamable HTTP**：Web 服務、遠端存取、多客戶端
+- **stdio**：命令列工具、本機開發、子程序整合
 
-### Notification Support
+### 通知支援
 
-Notify clients when server state changes:
+在伺服器狀態變更時通知客戶端：
 
 ```typescript
-// Notify when tools list changes
+// 當工具清單變更時通知
 server.notification({
   method: "notifications/tools/list_changed"
 });
 
-// Notify when resources change
+// 當資源變更時通知
 server.notification({
   method: "notifications/resources/list_changed"
 });
 ```
 
-Use notifications sparingly - only when server capabilities genuinely change.
+謹慎使用通知 - 僅在伺服器功能真正變更時使用。
 
 ---
 
-## Code Best Practices
+## 程式碼最佳實踐
 
-### Code Composability and Reusability
+### 程式碼可組合性和可重用性
 
-Your implementation MUST prioritize composability and code reuse:
+您的實作必須優先考慮可組合性和程式碼重用：
 
-1. **Extract Common Functionality**:
-   - Create reusable helper functions for operations used across multiple tools
-   - Build shared API clients for HTTP requests instead of duplicating code
-   - Centralize error handling logic in utility functions
-   - Extract business logic into dedicated functions that can be composed
-   - Extract shared markdown or JSON field selection & formatting functionality
+1. **提取常用功能**：
+   - 為跨多個工具使用的操作建立可重用的輔助函式
+   - 建構共用 API 客戶端用於 HTTP 請求，而不是複製程式碼
+   - 將錯誤處理邏輯集中在工具函式中
+   - 將業務邏輯提取到可以組合的專用函式中
+   - 提取共用的 markdown 或 JSON 欄位選擇和格式化功能
 
-2. **Avoid Duplication**:
-   - NEVER copy-paste similar code between tools
-   - If you find yourself writing similar logic twice, extract it into a function
-   - Common operations like pagination, filtering, field selection, and formatting should be shared
-   - Authentication/authorization logic should be centralized
+2. **避免重複**：
+   - 永不在工具之間複製貼上相似的程式碼
+   - 如果您發現自己寫了兩次相似的邏輯，將其提取為函式
+   - 分頁、過濾、欄位選擇和格式化等常用操作應該共用
+   - 認證/授權邏輯應該集中化
 
-## Building and Running
+## 建置和執行
 
-Always build your TypeScript code before running:
+在執行前始終建置您的 TypeScript 程式碼：
 
 ```bash
-# Build the project
+# 建置專案
 npm run build
 
-# Run the server
+# 執行伺服器
 npm start
 
-# Development with auto-reload
+# 帶自動重載的開發模式
 npm run dev
 ```
 
-Always ensure `npm run build` completes successfully before considering the implementation complete.
+在認為實作完成前，始終確保 `npm run build` 成功完成。
 
-## Quality Checklist
+## 品質檢查清單
 
-Before finalizing your Node/TypeScript MCP server implementation, ensure:
+在完成您的 Node/TypeScript MCP 伺服器實作前，確保：
 
-### Strategic Design
-- [ ] Tools enable complete workflows, not just API endpoint wrappers
-- [ ] Tool names reflect natural task subdivisions
-- [ ] Response formats optimize for agent context efficiency
-- [ ] Human-readable identifiers used where appropriate
-- [ ] Error messages guide agents toward correct usage
+### 策略設計
+- [ ] 工具支援完整工作流程，而不僅僅是 API 端點包裝
+- [ ] 工具名稱反映自然的任務細分
+- [ ] 回應格式最佳化代理上下文效率
+- [ ] 適當使用人類可讀識別碼
+- [ ] 錯誤訊息引導代理正確使用
 
-### Implementation Quality
-- [ ] FOCUSED IMPLEMENTATION: Most important and valuable tools implemented
-- [ ] All tools registered using `registerTool` with complete configuration
-- [ ] All tools include `title`, `description`, `inputSchema`, and `annotations`
-- [ ] Annotations correctly set (readOnlyHint, destructiveHint, idempotentHint, openWorldHint)
-- [ ] All tools use Zod schemas for runtime input validation with `.strict()` enforcement
-- [ ] All Zod schemas have proper constraints and descriptive error messages
-- [ ] All tools have comprehensive descriptions with explicit input/output types
-- [ ] Descriptions include return value examples and complete schema documentation
-- [ ] Error messages are clear, actionable, and educational
+### 實作品質
+- [ ] 專注實作：實作最重要和最有價值的工具
+- [ ] 所有工具使用 `registerTool` 並帶有完整配置
+- [ ] 所有工具包含 `title`、`description`、`inputSchema` 和 `annotations`
+- [ ] 正確設定註解（readOnlyHint、destructiveHint、idempotentHint、openWorldHint）
+- [ ] 所有工具使用 Zod schema 進行執行時輸入驗證，並帶有 `.strict()` 強制
+- [ ] 所有 Zod schema 有適當的約束和描述性錯誤訊息
+- [ ] 所有工具有包含明確輸入/輸出型別的全面描述
+- [ ] 描述包含回傳值範例和完整 schema 文件
+- [ ] 錯誤訊息清晰、可操作且具教育性
 
-### TypeScript Quality
-- [ ] TypeScript interfaces are defined for all data structures
-- [ ] Strict TypeScript is enabled in tsconfig.json
-- [ ] No use of `any` type - use `unknown` or proper types instead
-- [ ] All async functions have explicit Promise<T> return types
-- [ ] Error handling uses proper type guards (e.g., `axios.isAxiosError`, `z.ZodError`)
+### TypeScript 品質
+- [ ] 為所有資料結構定義 TypeScript 介面
+- [ ] 在 tsconfig.json 中啟用嚴格 TypeScript
+- [ ] 不使用 `any` 型別 - 改用 `unknown` 或適當型別
+- [ ] 所有非同步函式有明確的 Promise<T> 回傳型別
+- [ ] 錯誤處理使用適當的型別守衛（例如 `axios.isAxiosError`、`z.ZodError`）
 
-### Advanced Features (where applicable)
-- [ ] Resources registered for appropriate data endpoints
-- [ ] Appropriate transport configured (stdio or streamable HTTP)
-- [ ] Notifications implemented for dynamic server capabilities
-- [ ] Type-safe with SDK interfaces
+### 進階功能（視情況適用）
+- [ ] 為適當的資料端點註冊資源
+- [ ] 配置適當的傳輸（stdio 或 streamable HTTP）
+- [ ] 為動態伺服器功能實作通知
+- [ ] 使用 SDK 介面實現型別安全
 
-### Project Configuration
-- [ ] Package.json includes all necessary dependencies
-- [ ] Build script produces working JavaScript in dist/ directory
-- [ ] Main entry point is properly configured as dist/index.js
-- [ ] Server name follows format: `{service}-mcp-server`
-- [ ] tsconfig.json properly configured with strict mode
+### 專案配置
+- [ ] Package.json 包含所有必要的依賴項
+- [ ] 建置腳本在 dist/ 目錄產生可運作的 JavaScript
+- [ ] 主要進入點正確配置為 dist/index.js
+- [ ] 伺服器名稱遵循格式：`{service}-mcp-server`
+- [ ] tsconfig.json 正確配置為嚴格模式
 
-### Code Quality
-- [ ] Pagination is properly implemented where applicable
-- [ ] Large responses check CHARACTER_LIMIT constant and truncate with clear messages
-- [ ] Filtering options are provided for potentially large result sets
-- [ ] All network operations handle timeouts and connection errors gracefully
-- [ ] Common functionality is extracted into reusable functions
-- [ ] Return types are consistent across similar operations
+### 程式碼品質
+- [ ] 在適用處正確實作分頁
+- [ ] 大型回應檢查 CHARACTER_LIMIT 常數並帶有清晰訊息截斷
+- [ ] 為可能的大型結果集提供過濾選項
+- [ ] 所有網路操作優雅處理逾時和連線錯誤
+- [ ] 常用功能提取為可重用函式
+- [ ] 類似操作的回傳型別一致
 
-### Testing and Build
-- [ ] `npm run build` completes successfully without errors
-- [ ] dist/index.js created and executable
-- [ ] Server runs: `node dist/index.js --help`
-- [ ] All imports resolve correctly
-- [ ] Sample tool calls work as expected
+### 測試和建置
+- [ ] `npm run build` 成功完成且無錯誤
+- [ ] dist/index.js 已建立且可執行
+- [ ] 伺服器可執行：`node dist/index.js --help`
+- [ ] 所有匯入正確解析
+- [ ] 範例工具呼叫如預期運作

@@ -1,19 +1,19 @@
-# Sunset Boulevard
+# 日落大道
 
-A warm and vibrant theme inspired by golden hour sunsets, perfect for energetic and creative presentations.
+一個溫暖且充滿活力的主題，靈感來自黃金時刻的日落，非常適合充滿能量和創意的簡報。
 
-## Color Palette
+## 色彩調色盤
 
-- **Burnt Orange**: `#e76f51` - Primary accent color
-- **Coral**: `#f4a261` - Secondary warm accent
-- **Warm Sand**: `#e9c46a` - Highlighting and backgrounds
-- **Deep Purple**: `#264653` - Dark contrast and text
+- **焦橙色**: `#e76f51` - 主要強調色
+- **珊瑚色**: `#f4a261` - 次要暖色強調
+- **暖沙色**: `#e9c46a` - 亮點和背景
+- **深紫色**: `#264653` - 深色對比和文字
 
-## Typography
+## 字體排版
 
-- **Headers**: DejaVu Serif Bold
-- **Body Text**: DejaVu Sans
+- **標題**: DejaVu Serif Bold
+- **內文**: DejaVu Sans
 
-## Best Used For
+## 最適用於
 
-Creative pitches, marketing presentations, lifestyle brands, event promotions, inspirational content.
+創意提案、行銷簡報、生活風格品牌、活動推廣、激勵性內容。

@@ -1,19 +1,19 @@
-# Desert Rose
+# 沙漠玫瑰
 
-A soft and sophisticated theme with dusty, muted tones perfect for elegant presentations.
+一個柔和精緻的主題，採用塵土般的柔和色調，非常適合優雅的簡報。
 
-## Color Palette
+## 色彩調色盤
 
-- **Dusty Rose**: `#d4a5a5` - Soft primary color
-- **Clay**: `#b87d6d` - Earthy accent
-- **Sand**: `#e8d5c4` - Warm neutral backgrounds
-- **Deep Burgundy**: `#5d2e46` - Rich dark contrast
+- **煙燻玫瑰色**: `#d4a5a5` - 柔和的主要色
+- **黏土色**: `#b87d6d` - 土質強調色
+- **沙色**: `#e8d5c4` - 溫暖的中性背景
+- **深酒紅色**: `#5d2e46` - 濃郁的深色對比
 
-## Typography
+## 字體排版
 
-- **Headers**: FreeSans Bold
-- **Body Text**: FreeSans
+- **標題**: FreeSans Bold
+- **內文**: FreeSans
 
-## Best Used For
+## 最適用於
 
-Fashion presentations, beauty brands, wedding planning, interior design, boutique businesses.
+時尚簡報、美妝品牌、婚禮策劃、室內設計、精品商店。

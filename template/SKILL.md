@@ -1,6 +1,6 @@
 ---
 name: template-skill
-description: Replace with description of the skill and when Claude should use it.
+description: 替換為技能的描述以及 Claude 何時應該使用它。
 ---
 
-# Insert instructions below
+# 在下方插入指令

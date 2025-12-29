@@ -1,205 +1,205 @@
-**CRITICAL: You MUST complete these steps in order. Do not skip ahead to writing code.**
+**關鍵：您必須按順序完成這些步驟。不要跳過直接寫程式碼。**
 
-If you need to fill out a PDF form, first check to see if the PDF has fillable form fields. Run this script from this file's directory:
- `python scripts/check_fillable_fields <file.pdf>`, and depending on the result go to either the "Fillable fields" or "Non-fillable fields" and follow those instructions.
+如果您需要填寫 PDF 表單，首先檢查 PDF 是否有可填寫的表單欄位。從此檔案的目錄執行此腳本：
+ `python scripts/check_fillable_fields <file.pdf>`，根據結果前往「可填寫欄位」或「不可填寫欄位」並按照這些指示操作。
 
-# Fillable fields
-If the PDF has fillable form fields:
-- Run this script from this file's directory: `python scripts/extract_form_field_info.py <input.pdf> <field_info.json>`. It will create a JSON file with a list of fields in this format:
+# 可填寫欄位
+如果 PDF 有可填寫的表單欄位：
+- 從此檔案的目錄執行此腳本：`python scripts/extract_form_field_info.py <input.pdf> <field_info.json>`。它會建立一個 JSON 檔案，包含以下格式的欄位清單：
 ```
 [
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
-    "rect": ([left, bottom, right, top] bounding box in PDF coordinates, y=0 is the bottom of the page),
-    "type": ("text", "checkbox", "radio_group", or "choice"),
+    "field_id": (欄位的唯一 ID),
+    "page": (頁碼，從 1 開始),
+    "rect": ([左, 下, 右, 上] PDF 座標中的邊界框，y=0 是頁面底部),
+    "type": ("text", "checkbox", "radio_group", 或 "choice"),
   },
-  // Checkboxes have "checked_value" and "unchecked_value" properties:
+  // 核取方塊有 "checked_value" 和 "unchecked_value" 屬性：
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
+    "field_id": (欄位的唯一 ID),
+    "page": (頁碼，從 1 開始),
     "type": "checkbox",
-    "checked_value": (Set the field to this value to check the checkbox),
-    "unchecked_value": (Set the field to this value to uncheck the checkbox),
+    "checked_value": (將欄位設定為此值以勾選核取方塊),
+    "unchecked_value": (將欄位設定為此值以取消勾選核取方塊),
   },
-  // Radio groups have a "radio_options" list with the possible choices.
+  // 單選按鈕群組有 "radio_options" 清單，包含可能的選項。
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
+    "field_id": (欄位的唯一 ID),
+    "page": (頁碼，從 1 開始),
     "type": "radio_group",
     "radio_options": [
       {
-        "value": (set the field to this value to select this radio option),
-        "rect": (bounding box for the radio button for this option)
+        "value": (將欄位設定為此值以選擇此單選選項),
+        "rect": (此選項單選按鈕的邊界框)
       },
-      // Other radio options
+      // 其他單選選項
     ]
   },
-  // Multiple choice fields have a "choice_options" list with the possible choices:
+  // 多選欄位有 "choice_options" 清單，包含可能的選項：
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
+    "field_id": (欄位的唯一 ID),
+    "page": (頁碼，從 1 開始),
     "type": "choice",
     "choice_options": [
       {
-        "value": (set the field to this value to select this option),
-        "text": (display text of the option)
+        "value": (將欄位設定為此值以選擇此選項),
+        "text": (選項的顯示文字)
       },
-      // Other choice options
+      // 其他選項
     ],
   }
 ]
 ```
-- Convert the PDF to PNGs (one image for each page) with this script (run from this file's directory):
+- 使用此腳本將 PDF 轉換為 PNG（每頁一張圖片）（從此檔案的目錄執行）：
 `python scripts/convert_pdf_to_images.py <file.pdf> <output_directory>`
-Then analyze the images to determine the purpose of each form field (make sure to convert the bounding box PDF coordinates to image coordinates).
-- Create a `field_values.json` file in this format with the values to be entered for each field:
+然後分析圖片以確定每個表單欄位的用途（確保將邊界框 PDF 座標轉換為圖片座標）。
+- 建立一個 `field_values.json` 檔案，格式如下，包含每個欄位要輸入的值：
 ```
 [
   {
-    "field_id": "last_name", // Must match the field_id from `extract_form_field_info.py`
-    "description": "The user's last name",
-    "page": 1, // Must match the "page" value in field_info.json
+    "field_id": "last_name", // 必須與 `extract_form_field_info.py` 的 field_id 相符
+    "description": "使用者的姓氏",
+    "page": 1, // 必須與 field_info.json 中的 "page" 值相符
     "value": "Simpson"
   },
   {
     "field_id": "Checkbox12",
-    "description": "Checkbox to be checked if the user is 18 or over",
+    "description": "如果使用者年滿 18 歲則應勾選的核取方塊",
     "page": 1,
-    "value": "/On" // If this is a checkbox, use its "checked_value" value to check it. If it's a radio button group, use one of the "value" values in "radio_options".
+    "value": "/On" // 如果這是核取方塊，使用其 "checked_value" 值來勾選它。如果是單選按鈕群組，使用 "radio_options" 中的一個 "value" 值。
   },
-  // more fields
+  // 更多欄位
 ]
 ```
-- Run the `fill_fillable_fields.py` script from this file's directory to create a filled-in PDF:
+- 從此檔案的目錄執行 `fill_fillable_fields.py` 腳本以建立填寫好的 PDF：
 `python scripts/fill_fillable_fields.py <input pdf> <field_values.json> <output pdf>`
-This script will verify that the field IDs and values you provide are valid; if it prints error messages, correct the appropriate fields and try again.
+此腳本會驗證您提供的欄位 ID 和值是否有效；如果它印出錯誤訊息，請更正相應的欄位並重試。
 
-# Non-fillable fields
-If the PDF doesn't have fillable form fields, you'll need to visually determine where the data should be added and create text annotations. Follow the below steps *exactly*. You MUST perform all of these steps to ensure that the the form is accurately completed. Details for each step are below.
-- Convert the PDF to PNG images and determine field bounding boxes.
-- Create a JSON file with field information and validation images showing the bounding boxes.
-- Validate the the bounding boxes.
-- Use the bounding boxes to fill in the form.
+# 不可填寫欄位
+如果 PDF 沒有可填寫的表單欄位，您需要以視覺方式確定資料應該新增的位置並建立文字註解。請*完全*按照以下步驟操作。您必須執行所有這些步驟以確保表單被準確填寫。每個步驟的詳細說明如下。
+- 將 PDF 轉換為 PNG 圖片並確定欄位邊界框。
+- 建立包含欄位資訊和顯示邊界框的驗證圖片的 JSON 檔案。
+- 驗證邊界框。
+- 使用邊界框填寫表單。
 
-## Step 1: Visual Analysis (REQUIRED)
-- Convert the PDF to PNG images. Run this script from this file's directory:
+## 步驟 1：視覺分析（必要）
+- 將 PDF 轉換為 PNG 圖片。從此檔案的目錄執行此腳本：
 `python scripts/convert_pdf_to_images.py <file.pdf> <output_directory>`
-The script will create a PNG image for each page in the PDF.
-- Carefully examine each PNG image and identify all form fields and areas where the user should enter data. For each form field where the user should enter text, determine bounding boxes for both the form field label, and the area where the user should enter text. The label and entry bounding boxes MUST NOT INTERSECT; the text entry box should only include the area where data should be entered. Usually this area will be immediately to the side, above, or below its label. Entry bounding boxes must be tall and wide enough to contain their text.
+腳本會為 PDF 中的每一頁建立一張 PNG 圖片。
+- 仔細檢查每張 PNG 圖片並識別所有表單欄位和使用者應該輸入資料的區域。對於使用者應該輸入文字的每個表單欄位，確定欄位標籤和使用者應該輸入文字區域的邊界框。標籤和輸入邊界框不能重疊；文字輸入框應該只包含應該輸入資料的區域。通常此區域會在標籤的旁邊、上方或下方。輸入邊界框必須足夠高和寬以容納其文字。
 
-These are some examples of form structures that you might see:
+以下是一些您可能會看到的表單結構範例：
 
-*Label inside box*
+*標籤在框內*
 ```
 ┌────────────────────────┐
-│ Name:                  │
+│ 姓名：                  │
 └────────────────────────┘
 ```
-The input area should be to the right of the "Name" label and extend to the edge of the box.
+輸入區域應該在「姓名」標籤的右側並延伸到框的邊緣。
 
-*Label before line*
+*標籤在線前*
 ```
-Email: _______________________
+電子郵件：_______________________
 ```
-The input area should be above the line and include its entire width.
+輸入區域應該在線上方並包含其整個寬度。
 
-*Label under line*
+*標籤在線下*
 ```
 _________________________
-Name
+姓名
 ```
-The input area should be above the line and include the entire width of the line. This is common for signature and date fields.
+輸入區域應該在線上方並包含線的整個寬度。這在簽名和日期欄位中很常見。
 
-*Label above line*
+*標籤在線上*
 ```
-Please enter any special requests:
+請輸入任何特殊要求：
 ________________________________________________
 ```
-The input area should extend from the bottom of the label to the line, and should include the entire width of the line.
+輸入區域應該從標籤底部延伸到線，並應該包含線的整個寬度。
 
-*Checkboxes*
+*核取方塊*
 ```
-Are you a US citizen? Yes □  No □
+您是美國公民嗎？ 是 □  否 □
 ```
-For checkboxes:
-- Look for small square boxes (□) - these are the actual checkboxes to target. They may be to the left or right of their labels.
-- Distinguish between label text ("Yes", "No") and the clickable checkbox squares.
-- The entry bounding box should cover ONLY the small square, not the text label.
+對於核取方塊：
+- 尋找小方框（□）- 這些是要定位的實際核取方塊。它們可能在標籤的左側或右側。
+- 區分標籤文字（「是」、「否」）和可點擊的核取方塊方框。
+- 輸入邊界框應該只覆蓋小方框，不包括文字標籤。
 
-### Step 2: Create fields.json and validation images (REQUIRED)
-- Create a file named `fields.json` with information for the form fields and bounding boxes in this format:
+### 步驟 2：建立 fields.json 和驗證圖片（必要）
+- 建立一個名為 `fields.json` 的檔案，包含以下格式的表單欄位和邊界框資訊：
 ```
 {
   "pages": [
     {
       "page_number": 1,
-      "image_width": (first page image width in pixels),
-      "image_height": (first page image height in pixels),
+      "image_width": (第一頁圖片寬度，像素),
+      "image_height": (第一頁圖片高度，像素),
     },
     {
       "page_number": 2,
-      "image_width": (second page image width in pixels),
-      "image_height": (second page image height in pixels),
+      "image_width": (第二頁圖片寬度，像素),
+      "image_height": (第二頁圖片高度，像素),
     }
-    // additional pages
+    // 其他頁面
   ],
   "form_fields": [
-    // Example for a text field.
+    // 文字欄位範例。
     {
       "page_number": 1,
-      "description": "The user's last name should be entered here",
-      // Bounding boxes are [left, top, right, bottom]. The bounding boxes for the label and text entry should not overlap.
-      "field_label": "Last name",
+      "description": "使用者的姓氏應在此輸入",
+      // 邊界框為 [左, 上, 右, 下]。標籤和文字輸入的邊界框不應重疊。
+      "field_label": "姓氏",
       "label_bounding_box": [30, 125, 95, 142],
       "entry_bounding_box": [100, 125, 280, 142],
       "entry_text": {
-        "text": "Johnson", // This text will be added as an annotation at the entry_bounding_box location
-        "font_size": 14, // optional, defaults to 14
-        "font_color": "000000", // optional, RRGGBB format, defaults to 000000 (black)
+        "text": "Johnson", // 此文字會作為註解新增到 entry_bounding_box 位置
+        "font_size": 14, // 可選，預設為 14
+        "font_color": "000000", // 可選，RRGGBB 格式，預設為 000000（黑色）
       }
     },
-    // Example for a checkbox. TARGET THE SQUARE for the entry bounding box, NOT THE TEXT
+    // 核取方塊範例。輸入邊界框要對準方框，不是文字
     {
       "page_number": 2,
-      "description": "Checkbox that should be checked if the user is over 18",
-      "entry_bounding_box": [140, 525, 155, 540],  // Small box over checkbox square
-      "field_label": "Yes",
-      "label_bounding_box": [100, 525, 132, 540],  // Box containing "Yes" text
-      // Use "X" to check a checkbox.
+      "description": "如果使用者年滿 18 歲則應勾選的核取方塊",
+      "entry_bounding_box": [140, 525, 155, 540],  // 覆蓋核取方塊方框的小框
+      "field_label": "是",
+      "label_bounding_box": [100, 525, 132, 540],  // 包含「是」文字的框
+      // 使用「X」來勾選核取方塊。
       "entry_text": {
         "text": "X",
       }
     }
-    // additional form field entries
+    // 其他表單欄位項目
   ]
 }
 ```
 
-Create validation images by running this script from this file's directory for each page:
+從此檔案的目錄為每一頁執行此腳本以建立驗證圖片：
 `python scripts/create_validation_image.py <page_number> <path_to_fields.json> <input_image_path> <output_image_path>
 
-The validation images will have red rectangles where text should be entered, and blue rectangles covering label text.
+驗證圖片會在應該輸入文字的地方顯示紅色矩形，並在標籤文字上顯示藍色矩形。
 
-### Step 3: Validate Bounding Boxes (REQUIRED)
-#### Automated intersection check
-- Verify that none of bounding boxes intersect and that the entry bounding boxes are tall enough by checking the fields.json file with the `check_bounding_boxes.py` script (run from this file's directory):
+### 步驟 3：驗證邊界框（必要）
+#### 自動交集檢查
+- 通過使用 `check_bounding_boxes.py` 腳本檢查 fields.json 檔案來驗證邊界框是否相交以及輸入邊界框是否足夠高（從此檔案的目錄執行）：
 `python scripts/check_bounding_boxes.py <JSON file>`
 
-If there are errors, reanalyze the relevant fields, adjust the bounding boxes, and iterate until there are no remaining errors. Remember: label (blue) bounding boxes should contain text labels, entry (red) boxes should not.
+如果有錯誤，重新分析相關欄位，調整邊界框，並反覆修正直到沒有剩餘錯誤。記住：標籤（藍色）邊界框應包含文字標籤，輸入（紅色）框不應包含。
 
-#### Manual image inspection
-**CRITICAL: Do not proceed without visually inspecting validation images**
-- Red rectangles must ONLY cover input areas
-- Red rectangles MUST NOT contain any text
-- Blue rectangles should contain label text
-- For checkboxes:
-  - Red rectangle MUST be centered on the checkbox square
-  - Blue rectangle should cover the text label for the checkbox
+#### 手動圖片檢查
+**關鍵：在視覺檢查驗證圖片之前不要繼續**
+- 紅色矩形必須只覆蓋輸入區域
+- 紅色矩形不能包含任何文字
+- 藍色矩形應包含標籤文字
+- 對於核取方塊：
+  - 紅色矩形必須對準核取方塊方框
+  - 藍色矩形應覆蓋核取方塊的文字標籤
 
-- If any rectangles look wrong, fix fields.json, regenerate the validation images, and verify again. Repeat this process until the bounding boxes are fully accurate.
+- 如果任何矩形看起來不正確，修正 fields.json，重新生成驗證圖片，並再次驗證。重複此過程直到邊界框完全準確。
 
 
-### Step 4: Add annotations to the PDF
-Run this script from this file's directory to create a filled-out PDF using the information in fields.json:
+### 步驟 4：將註解新增到 PDF
+從此檔案的目錄執行此腳本，使用 fields.json 中的資訊建立填寫好的 PDF：
 `python scripts/fill_pdf_form_with_annotations.py <input_pdf_path> <path_to_fields.json> <output_pdf_path>

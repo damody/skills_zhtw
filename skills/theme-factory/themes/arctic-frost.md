@@ -1,19 +1,19 @@
-# Arctic Frost
+# 極地霜雪
 
-A cool and crisp winter-inspired theme that conveys clarity, precision, and professionalism.
+一個酷炫清新的冬季靈感主題，傳達清晰、精確和專業感。
 
-## Color Palette
+## 色彩調色盤
 
-- **Ice Blue**: `#d4e4f7` - Light backgrounds and highlights
-- **Steel Blue**: `#4a6fa5` - Primary accent color
-- **Silver**: `#c0c0c0` - Metallic accent elements
-- **Crisp White**: `#fafafa` - Clean backgrounds and text
+- **冰藍色**: `#d4e4f7` - 淺色背景和亮點
+- **鋼藍色**: `#4a6fa5` - 主要強調色
+- **銀色**: `#c0c0c0` - 金屬質感元素
+- **清脆白**: `#fafafa` - 乾淨的背景和文字
 
-## Typography
+## 字體排版
 
-- **Headers**: DejaVu Sans Bold
-- **Body Text**: DejaVu Sans
+- **標題**: DejaVu Sans Bold
+- **內文**: DejaVu Sans
 
-## Best Used For
+## 最適用於
 
-Healthcare presentations, technology solutions, winter sports, clean tech, pharmaceutical content.
+醫療保健簡報、科技解決方案、冬季運動、潔淨科技、製藥內容。

@@ -1,47 +1,46 @@
-## Instructions
-You are being asked to write a 3P update. 3P updates stand for "Progress, Plans, Problems." The main audience is for executives, leadership, other teammates, etc. They're meant to be very succinct and to-the-point: think something you can read in 30-60sec or less. They're also for people with some, but not a lot of context on what the team does.
+## 說明
+您被要求撰寫 3P 更新報告。3P 更新代表「進度、計劃、問題」（Progress, Plans, Problems）。主要讀者為高階主管、領導層、其他團隊成員等。報告需要非常簡潔扼要：以 30-60 秒內可讀完為目標。這些報告是給對團隊工作有一定了解但不太深入的人閱讀的。
 
-3Ps can cover a team of any size, ranging all the way up to the entire company. The bigger the team, the less granular the tasks should be. For example, "mobile team" might have "shipped feature" or "fixed bugs," whereas the company might have really meaty 3Ps, like "hired 20 new people" or "closed 10 new deals." 
+3P 報告可涵蓋任何規模的團隊，範圍從小團隊到整個公司都可以。團隊越大，任務描述應越精簡。例如，「行動團隊」可能會寫「已發布功能」或「已修復錯誤」，而公司層級的 3P 報告則會有更重要的內容，如「招聘了 20 位新員工」或「完成了 10 筆新交易」。
 
-They represent the work of the team across a time period, almost always one week. They include three sections:
-1) Progress: what the team has accomplished over the next time period. Focus mainly on things shipped, milestones achieved, tasks created, etc.
-2) Plans: what the team plans to do over the next time period. Focus on what things are top-of-mind, really high priority, etc. for the team.
-3) Problems: anything that is slowing the team down. This could be things like too few people, bugs or blockers that are preventing the team from moving forward, some deal that fell through, etc.
+報告代表團隊在一段時間內的工作成果，幾乎都是以一週為單位。包含三個部分：
+1) 進度：團隊在過去一段時間內完成的事項。主要聚焦於已發布的功能、達成的里程碑、創建的任務等。
+2) 計劃：團隊在下一段時間內計劃要做的事項。聚焦於團隊目前最關注、最優先的事項。
+3) 問題：任何拖慢團隊進度的事項。可能包括人手不足、阻礙團隊前進的錯誤或障礙、失敗的交易等。
 
-Before writing them, make sure that you know the team name. If it's not specified, you can ask explicitly what the team name you're writing for is.
-
-
-## Tools Available
-Whenever possible, try to pull from available sources to get the information you need:
-- Slack: posts from team members with their updates - ideally look for posts in large channels with lots of reactions
-- Google Drive: docs written from critical team members with lots of views
-- Email: emails with lots of responses of lots of content that seems relevant
-- Calendar: non-recurring meetings that have a lot of importance, like product reviews, etc.
+在撰寫之前，請確認您知道團隊名稱。如果未指定，您可以明確詢問您要為哪個團隊撰寫報告。
 
 
-Try to gather as much context as you can, focusing on the things that covered the time period you're writing for:
-- Progress: anything between a week ago and today
-- Plans: anything from today to the next week
-- Problems: anything between a week ago and today
+## 可用工具
+盡可能從可用資源中獲取所需資訊：
+- Slack：團隊成員發布的更新貼文 - 最好尋找大型頻道中有很多反應的貼文
+- Google Drive：由關鍵團隊成員撰寫、有很多瀏覽量的文件
+- Email：有很多回覆或有大量相關內容的電子郵件
+- Calendar：具有重要性的非定期會議，如產品評審等
 
 
-If you don't have access, you can ask the user for things they want to cover. They might also include these things to you directly, in which case you're mostly just formatting for this particular format.
+盡量收集與您撰寫時段相關的背景資訊：
+- 進度：從一週前到今天之間的任何事項
+- 計劃：從今天到下週之間的任何事項
+- 問題：從一週前到今天之間的任何事項
 
-## Workflow
 
-1. **Clarify scope**: Confirm the team name and time period (usually past week for Progress/Problems, next
-week for Plans)
-2. **Gather information**: Use available tools or ask the user directly
-3. **Draft the update**: Follow the strict formatting guidelines
-4. **Review**: Ensure it's concise (30-60 seconds to read) and data-driven
+如果您沒有存取權限，可以詢問使用者想要涵蓋的內容。使用者也可能直接提供這些資訊給您，在這種情況下，您主要是將內容格式化為這種特定格式。
 
-## Formatting
+## 工作流程
 
-The format is always the same, very strict formatting. Never use any formatting other than this. Pick an emoji that is fun and captures the vibe of the team and update.
+1. **確認範圍**：確認團隊名稱和時間範圍（通常進度/問題是過去一週，計劃是下一週）
+2. **收集資訊**：使用可用工具或直接詢問使用者
+3. **撰寫更新**：遵循嚴格的格式規範
+4. **審查**：確保內容簡潔（30-60 秒可讀完）且有數據支持
 
-[pick an emoji] [Team Name] (Dates Covered, usually a week)
-Progress: [1-3 sentences of content]
-Plans: [1-3 sentences of content]
-Problems: [1-3 sentences of content]
+## 格式
 
-Each section should be no more than 1-3 sentences: clear, to the point. It should be data-driven, and generally include metrics where possible. The tone should be very matter-of-fact, not super prose-heavy.
+格式始終相同，非常嚴格。切勿使用其他格式。選擇一個有趣且能反映團隊和更新氛圍的表情符號。
+
+[選擇一個表情符號] [團隊名稱] (涵蓋日期，通常為一週)
+進度：[1-3 句內容]
+計劃：[1-3 句內容]
+問題：[1-3 句內容]
+
+每個部分不應超過 1-3 句話：清晰、切中要點。應以數據為導向，盡可能包含指標。語調應非常實事求是，不要過於華麗。

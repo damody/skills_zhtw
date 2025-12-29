@@ -1,431 +1,431 @@
-# MCP Server Evaluation Guide
+# MCP 伺服器評估指南
 
-## Overview
+## 概述
 
-This document provides guidance on creating comprehensive evaluations for MCP servers. Evaluations test whether LLMs can effectively use your MCP server to answer realistic, complex questions using only the tools provided.
+本文件提供為 MCP 伺服器建立全面評估的指導。評估測試 LLM 是否能有效使用您的 MCP 伺服器，僅使用提供的工具來回答真實、複雜的問題。
 
 ---
 
-## Quick Reference
+## 快速參考
 
-### Evaluation Requirements
-- Create 10 human-readable questions
-- Questions must be READ-ONLY, INDEPENDENT, NON-DESTRUCTIVE
-- Each question requires multiple tool calls (potentially dozens)
-- Answers must be single, verifiable values
-- Answers must be STABLE (won't change over time)
+### 評估需求
+- 建立 10 個人類可讀的問題
+- 問題必須是唯讀、獨立、非破壞性的
+- 每個問題需要多次工具呼叫（可能數十次）
+- 答案必須是單一、可驗證的值
+- 答案必須是穩定的（不會隨時間改變）
 
-### Output Format
+### 輸出格式
 ```xml
 <evaluation>
    <qa_pair>
-      <question>Your question here</question>
-      <answer>Single verifiable answer</answer>
+      <question>您的問題在這裡</question>
+      <answer>單一可驗證的答案</answer>
    </qa_pair>
 </evaluation>
 ```
 
 ---
 
-## Purpose of Evaluations
+## 評估的目的
 
-The measure of quality of an MCP server is NOT how well or comprehensively the server implements tools, but how well these implementations (input/output schemas, docstrings/descriptions, functionality) enable LLMs with no other context and access ONLY to the MCP servers to answer realistic and difficult questions.
+MCP 伺服器品質的衡量標準不是伺服器實作工具的完整性或優劣，而是這些實作（輸入/輸出 schema、docstring/描述、功能）如何讓沒有其他上下文且只能存取 MCP 伺服器的 LLM 回答真實且困難的問題。
 
-## Evaluation Overview
+## 評估概述
 
-Create 10 human-readable questions requiring ONLY READ-ONLY, INDEPENDENT, NON-DESTRUCTIVE, and IDEMPOTENT operations to answer. Each question should be:
-- Realistic
-- Clear and concise
-- Unambiguous
-- Complex, requiring potentially dozens of tool calls or steps
-- Answerable with a single, verifiable value that you identify in advance
+建立 10 個人類可讀的問題，只需要唯讀、獨立、非破壞性和冪等操作來回答。每個問題應該：
+- 真實
+- 清晰簡潔
+- 明確
+- 複雜，可能需要數十次工具呼叫或步驟
+- 可用單一、可驗證的值回答，且您事先確認該值
 
-## Question Guidelines
+## 問題指南
 
-### Core Requirements
+### 核心需求
 
-1. **Questions MUST be independent**
-   - Each question should NOT depend on the answer to any other question
-   - Should not assume prior write operations from processing another question
+1. **問題必須獨立**
+   - 每個問題不應依賴任何其他問題的答案
+   - 不應假設處理另一個問題時有進行寫入操作
 
-2. **Questions MUST require ONLY NON-DESTRUCTIVE AND IDEMPOTENT tool use**
-   - Should not instruct or require modifying state to arrive at the correct answer
+2. **問題必須只需要非破壞性和冪等的工具使用**
+   - 不應指示或要求修改狀態來得到正確答案
 
-3. **Questions must be REALISTIC, CLEAR, CONCISE, and COMPLEX**
-   - Must require another LLM to use multiple (potentially dozens of) tools or steps to answer
+3. **問題必須是真實、清晰、簡潔且複雜的**
+   - 必須要求另一個 LLM 使用多個（可能數十個）工具或步驟來回答
 
-### Complexity and Depth
+### 複雜性和深度
 
-4. **Questions must require deep exploration**
-   - Consider multi-hop questions requiring multiple sub-questions and sequential tool calls
-   - Each step should benefit from information found in previous questions
+4. **問題必須需要深入探索**
+   - 考慮需要多個子問題和連續工具呼叫的多跳問題
+   - 每個步驟應該受益於先前問題中找到的資訊
 
-5. **Questions may require extensive paging**
-   - May need paging through multiple pages of results
-   - May require querying old data (1-2 years out-of-date) to find niche information
-   - The questions must be DIFFICULT
+5. **問題可能需要大量分頁**
+   - 可能需要翻閱多頁結果
+   - 可能需要查詢舊資料（1-2 年前）以找到冷門資訊
+   - 問題必須是困難的
 
-6. **Questions must require deep understanding**
-   - Rather than surface-level knowledge
-   - May pose complex ideas as True/False questions requiring evidence
-   - May use multiple-choice format where LLM must search different hypotheses
+6. **問題必須需要深入理解**
+   - 而非表面知識
+   - 可以將複雜想法設計為需要證據的是非題
+   - 可以使用選擇題格式，讓 LLM 必須搜尋不同假設
 
-7. **Questions must not be solvable with straightforward keyword search**
-   - Do not include specific keywords from the target content
-   - Use synonyms, related concepts, or paraphrases
-   - Require multiple searches, analyzing multiple related items, extracting context, then deriving the answer
+7. **問題不能用簡單的關鍵字搜尋解決**
+   - 不要包含目標內容中的特定關鍵字
+   - 使用同義詞、相關概念或改述
+   - 需要多次搜尋、分析多個相關項目、擷取上下文，然後推導答案
 
-### Tool Testing
+### 工具測試
 
-8. **Questions should stress-test tool return values**
-   - May elicit tools returning large JSON objects or lists, overwhelming the LLM
-   - Should require understanding multiple modalities of data:
-     - IDs and names
-     - Timestamps and datetimes (months, days, years, seconds)
-     - File IDs, names, extensions, and mimetypes
-     - URLs, GIDs, etc.
-   - Should probe the tool's ability to return all useful forms of data
+8. **問題應該壓力測試工具回傳值**
+   - 可能引出工具回傳大型 JSON 物件或清單，使 LLM 不堪負荷
+   - 應該要求理解多種資料模態：
+     - ID 和名稱
+     - 時間戳記和日期時間（月、日、年、秒）
+     - 檔案 ID、名稱、副檔名和 MIME 類型
+     - URL、GID 等
+   - 應該測試工具回傳所有有用資料形式的能力
 
-9. **Questions should MOSTLY reflect real human use cases**
-   - The kinds of information retrieval tasks that HUMANS assisted by an LLM would care about
+9. **問題應該大多反映真實的人類使用案例**
+   - 人類在 LLM 協助下會關心的那種資訊檢索任務
 
-10. **Questions may require dozens of tool calls**
-    - This challenges LLMs with limited context
-    - Encourages MCP server tools to reduce information returned
+10. **問題可能需要數十次工具呼叫**
+    - 這挑戰上下文有限的 LLM
+    - 鼓勵 MCP 伺服器工具減少回傳的資訊量
 
-11. **Include ambiguous questions**
-    - May be ambiguous OR require difficult decisions on which tools to call
-    - Force the LLM to potentially make mistakes or misinterpret
-    - Ensure that despite AMBIGUITY, there is STILL A SINGLE VERIFIABLE ANSWER
+11. **包含模糊的問題**
+    - 可能是模糊的，或需要對呼叫哪些工具做出困難決定
+    - 迫使 LLM 可能犯錯或誤解
+    - 確保儘管有模糊性，仍然有單一可驗證的答案
 
-### Stability
+### 穩定性
 
-12. **Questions must be designed so the answer DOES NOT CHANGE**
-    - Do not ask questions that rely on "current state" which is dynamic
-    - For example, do not count:
-      - Number of reactions to a post
-      - Number of replies to a thread
-      - Number of members in a channel
+12. **問題必須設計成答案不會改變**
+    - 不要問依賴動態「目前狀態」的問題
+    - 例如，不要計算：
+      - 貼文的反應數
+      - 討論串的回覆數
+      - 頻道的成員數
 
-13. **DO NOT let the MCP server RESTRICT the kinds of questions you create**
-    - Create challenging and complex questions
-    - Some may not be solvable with the available MCP server tools
-    - Questions may require specific output formats (datetime vs. epoch time, JSON vs. MARKDOWN)
-    - Questions may require dozens of tool calls to complete
+13. **不要讓 MCP 伺服器限制您建立的問題種類**
+    - 建立具挑戰性和複雜的問題
+    - 有些可能無法用可用的 MCP 伺服器工具解決
+    - 問題可能需要特定輸出格式（datetime vs. epoch time、JSON vs. MARKDOWN）
+    - 問題可能需要數十次工具呼叫才能完成
 
-## Answer Guidelines
+## 答案指南
 
-### Verification
+### 驗證
 
-1. **Answers must be VERIFIABLE via direct string comparison**
-   - If the answer can be re-written in many formats, clearly specify the output format in the QUESTION
-   - Examples: "Use YYYY/MM/DD.", "Respond True or False.", "Answer A, B, C, or D and nothing else."
-   - Answer should be a single VERIFIABLE value such as:
-     - User ID, user name, display name, first name, last name
-     - Channel ID, channel name
-     - Message ID, string
-     - URL, title
-     - Numerical quantity
-     - Timestamp, datetime
-     - Boolean (for True/False questions)
-     - Email address, phone number
-     - File ID, file name, file extension
-     - Multiple choice answer
-   - Answers must not require special formatting or complex, structured output
-   - Answer will be verified using DIRECT STRING COMPARISON
+1. **答案必須可通過直接字串比較驗證**
+   - 如果答案可以用多種格式重寫，請在問題中明確指定輸出格式
+   - 範例：「使用 YYYY/MM/DD。」、「回答 True 或 False。」、「回答 A、B、C 或 D，不要其他。」
+   - 答案應該是單一可驗證的值，例如：
+     - 使用者 ID、使用者名稱、顯示名稱、名字、姓氏
+     - 頻道 ID、頻道名稱
+     - 訊息 ID、字串
+     - URL、標題
+     - 數字量
+     - 時間戳記、日期時間
+     - 布林值（用於是非題）
+     - 電子郵件地址、電話號碼
+     - 檔案 ID、檔案名稱、副檔名
+     - 選擇題答案
+   - 答案不需要特殊格式或複雜的結構化輸出
+   - 答案將使用直接字串比較驗證
 
-### Readability
+### 可讀性
 
-2. **Answers should generally prefer HUMAN-READABLE formats**
-   - Examples: names, first name, last name, datetime, file name, message string, URL, yes/no, true/false, a/b/c/d
-   - Rather than opaque IDs (though IDs are acceptable)
-   - The VAST MAJORITY of answers should be human-readable
+2. **答案通常應優先使用人類可讀的格式**
+   - 範例：名稱、名字、姓氏、日期時間、檔案名稱、訊息字串、URL、是/否、true/false、a/b/c/d
+   - 而非不透明的 ID（雖然 ID 也可接受）
+   - 絕大多數答案應該是人類可讀的
 
-### Stability
+### 穩定性
 
-3. **Answers must be STABLE/STATIONARY**
-   - Look at old content (e.g., conversations that have ended, projects that have launched, questions answered)
-   - Create QUESTIONS based on "closed" concepts that will always return the same answer
-   - Questions may ask to consider a fixed time window to insulate from non-stationary answers
-   - Rely on context UNLIKELY to change
-   - Example: if finding a paper name, be SPECIFIC enough so answer is not confused with papers published later
+3. **答案必須是穩定/固定的**
+   - 查看舊內容（例如已結束的對話、已啟動的專案、已回答的問題）
+   - 基於「已關閉」的概念建立問題，這些問題總是會回傳相同答案
+   - 問題可以要求考慮固定時間窗口以避免非固定答案
+   - 依賴不太可能改變的上下文
+   - 範例：如果要找論文名稱，要足夠具體，這樣答案不會與後來發表的論文混淆
 
-4. **Answers must be CLEAR and UNAMBIGUOUS**
-   - Questions must be designed so there is a single, clear answer
-   - Answer can be derived from using the MCP server tools
+4. **答案必須清晰且明確**
+   - 問題必須設計成有單一、清晰的答案
+   - 答案可以從使用 MCP 伺服器工具推導出來
 
-### Diversity
+### 多樣性
 
-5. **Answers must be DIVERSE**
-   - Answer should be a single VERIFIABLE value in diverse modalities and formats
-   - User concept: user ID, user name, display name, first name, last name, email address, phone number
-   - Channel concept: channel ID, channel name, channel topic
-   - Message concept: message ID, message string, timestamp, month, day, year
+5. **答案必須多樣化**
+   - 答案應該是各種模態和格式的單一可驗證值
+   - 使用者概念：使用者 ID、使用者名稱、顯示名稱、名字、姓氏、電子郵件地址、電話號碼
+   - 頻道概念：頻道 ID、頻道名稱、頻道主題
+   - 訊息概念：訊息 ID、訊息字串、時間戳記、月、日、年
 
-6. **Answers must NOT be complex structures**
-   - Not a list of values
-   - Not a complex object
-   - Not a list of IDs or strings
-   - Not natural language text
-   - UNLESS the answer can be straightforwardly verified using DIRECT STRING COMPARISON
-   - And can be realistically reproduced
-   - It should be unlikely that an LLM would return the same list in any other order or format
+6. **答案不能是複雜結構**
+   - 不是值的清單
+   - 不是複雜物件
+   - 不是 ID 或字串的清單
+   - 不是自然語言文字
+   - 除非答案可以用直接字串比較直接驗證
+   - 且可以實際重現
+   - LLM 不太可能以任何其他順序或格式回傳相同清單
 
-## Evaluation Process
+## 評估流程
 
-### Step 1: Documentation Inspection
+### 步驟 1：文件檢查
 
-Read the documentation of the target API to understand:
-- Available endpoints and functionality
-- If ambiguity exists, fetch additional information from the web
-- Parallelize this step AS MUCH AS POSSIBLE
-- Ensure each subagent is ONLY examining documentation from the file system or on the web
+閱讀目標 API 的文件以了解：
+- 可用的端點和功能
+- 如果存在模糊性，從網路獲取額外資訊
+- 盡可能並行化此步驟
+- 確保每個子代理只檢查檔案系統或網路上的文件
 
-### Step 2: Tool Inspection
+### 步驟 2：工具檢查
 
-List the tools available in the MCP server:
-- Inspect the MCP server directly
-- Understand input/output schemas, docstrings, and descriptions
-- WITHOUT calling the tools themselves at this stage
+列出 MCP 伺服器中可用的工具：
+- 直接檢查 MCP 伺服器
+- 了解輸入/輸出 schema、docstring 和描述
+- 在此階段不要呼叫工具本身
 
-### Step 3: Developing Understanding
+### 步驟 3：發展理解
 
-Repeat steps 1 & 2 until you have a good understanding:
-- Iterate multiple times
-- Think about the kinds of tasks you want to create
-- Refine your understanding
-- At NO stage should you READ the code of the MCP server implementation itself
-- Use your intuition and understanding to create reasonable, realistic, but VERY challenging tasks
+重複步驟 1 和 2 直到您有良好的理解：
+- 多次迭代
+- 思考您想建立的任務種類
+- 精進您的理解
+- 在任何階段都不應該閱讀 MCP 伺服器實作本身的程式碼
+- 使用您的直覺和理解來建立合理、真實但非常具挑戰性的任務
 
-### Step 4: Read-Only Content Inspection
+### 步驟 4：唯讀內容檢查
 
-After understanding the API and tools, USE the MCP server tools:
-- Inspect content using READ-ONLY and NON-DESTRUCTIVE operations ONLY
-- Goal: identify specific content (e.g., users, channels, messages, projects, tasks) for creating realistic questions
-- Should NOT call any tools that modify state
-- Will NOT read the code of the MCP server implementation itself
-- Parallelize this step with individual sub-agents pursuing independent explorations
-- Ensure each subagent is only performing READ-ONLY, NON-DESTRUCTIVE, and IDEMPOTENT operations
-- BE CAREFUL: SOME TOOLS may return LOTS OF DATA which would cause you to run out of CONTEXT
-- Make INCREMENTAL, SMALL, AND TARGETED tool calls for exploration
-- In all tool call requests, use the `limit` parameter to limit results (<10)
-- Use pagination
+在了解 API 和工具後，使用 MCP 伺服器工具：
+- 只使用唯讀和非破壞性操作檢查內容
+- 目標：識別特定內容（例如使用者、頻道、訊息、專案、任務）以建立真實問題
+- 不應呼叫任何修改狀態的工具
+- 不會閱讀 MCP 伺服器實作本身的程式碼
+- 使用個別子代理進行獨立探索來並行化此步驟
+- 確保每個子代理只執行唯讀、非破壞性和冪等操作
+- 小心：有些工具可能回傳大量資料，這會導致您耗盡上下文
+- 進行漸進、小型且有針對性的工具呼叫以進行探索
+- 在所有工具呼叫請求中，使用 `limit` 參數限制結果（<10）
+- 使用分頁
 
-### Step 5: Task Generation
+### 步驟 5：任務生成
 
-After inspecting the content, create 10 human-readable questions:
-- An LLM should be able to answer these with the MCP server
-- Follow all question and answer guidelines above
+檢查內容後，建立 10 個人類可讀的問題：
+- LLM 應該能用 MCP 伺服器回答這些問題
+- 遵循上面所有問題和答案指南
 
-## Output Format
+## 輸出格式
 
-Each QA pair consists of a question and an answer. The output should be an XML file with this structure:
+每個問答對由一個問題和一個答案組成。輸出應該是具有此結構的 XML 檔案：
 
 ```xml
 <evaluation>
    <qa_pair>
-      <question>Find the project created in Q2 2024 with the highest number of completed tasks. What is the project name?</question>
+      <question>找出 2024 年第二季建立的完成任務數最多的專案。專案名稱是什麼？</question>
       <answer>Website Redesign</answer>
    </qa_pair>
    <qa_pair>
-      <question>Search for issues labeled as "bug" that were closed in March 2024. Which user closed the most issues? Provide their username.</question>
+      <question>搜尋 2024 年 3 月關閉的標記為「bug」的問題。哪個使用者關閉了最多問題？提供他們的使用者名稱。</question>
       <answer>sarah_dev</answer>
    </qa_pair>
    <qa_pair>
-      <question>Look for pull requests that modified files in the /api directory and were merged between January 1 and January 31, 2024. How many different contributors worked on these PRs?</question>
+      <question>尋找在 2024 年 1 月 1 日到 1 月 31 日之間合併的修改 /api 目錄檔案的拉取請求。有多少不同的貢獻者參與了這些 PR？</question>
       <answer>7</answer>
    </qa_pair>
    <qa_pair>
-      <question>Find the repository with the most stars that was created before 2023. What is the repository name?</question>
+      <question>找出在 2023 年之前建立且星標數最多的儲存庫。儲存庫名稱是什麼？</question>
       <answer>data-pipeline</answer>
    </qa_pair>
 </evaluation>
 ```
 
-## Evaluation Examples
+## 評估範例
 
-### Good Questions
+### 好的問題
 
-**Example 1: Multi-hop question requiring deep exploration (GitHub MCP)**
+**範例 1：需要深入探索的多跳問題（GitHub MCP）**
 ```xml
 <qa_pair>
-   <question>Find the repository that was archived in Q3 2023 and had previously been the most forked project in the organization. What was the primary programming language used in that repository?</question>
+   <question>找出在 2023 年第三季封存且之前是組織中最多 fork 專案的儲存庫。該儲存庫使用的主要程式語言是什麼？</question>
    <answer>Python</answer>
 </qa_pair>
 ```
 
-This question is good because:
-- Requires multiple searches to find archived repositories
-- Needs to identify which had the most forks before archival
-- Requires examining repository details for the language
-- Answer is a simple, verifiable value
-- Based on historical (closed) data that won't change
+這個問題好在：
+- 需要多次搜尋才能找到封存的儲存庫
+- 需要識別封存前哪個有最多 fork
+- 需要檢查儲存庫詳情以獲取語言
+- 答案是簡單、可驗證的值
+- 基於不會改變的歷史（已關閉）資料
 
-**Example 2: Requires understanding context without keyword matching (Project Management MCP)**
+**範例 2：需要理解上下文而非關鍵字匹配（專案管理 MCP）**
 ```xml
 <qa_pair>
-   <question>Locate the initiative focused on improving customer onboarding that was completed in late 2023. The project lead created a retrospective document after completion. What was the lead's role title at that time?</question>
+   <question>找出專注於改善客戶入職流程且在 2023 年底完成的計劃。專案負責人在完成後建立了回顧文件。當時負責人的職位是什麼？</question>
    <answer>Product Manager</answer>
 </qa_pair>
 ```
 
-This question is good because:
-- Doesn't use specific project name ("initiative focused on improving customer onboarding")
-- Requires finding completed projects from specific timeframe
-- Needs to identify the project lead and their role
-- Requires understanding context from retrospective documents
-- Answer is human-readable and stable
-- Based on completed work (won't change)
+這個問題好在：
+- 不使用特定專案名稱（「專注於改善客戶入職流程的計劃」）
+- 需要找到特定時間範圍內完成的專案
+- 需要識別專案負責人及其角色
+- 需要從回顧文件理解上下文
+- 答案是人類可讀且穩定的
+- 基於已完成的工作（不會改變）
 
-**Example 3: Complex aggregation requiring multiple steps (Issue Tracker MCP)**
+**範例 3：需要多步驟的複雜彙總（問題追蹤 MCP）**
 ```xml
 <qa_pair>
-   <question>Among all bugs reported in January 2024 that were marked as critical priority, which assignee resolved the highest percentage of their assigned bugs within 48 hours? Provide the assignee's username.</question>
+   <question>在 2024 年 1 月回報的所有標記為關鍵優先級的 bug 中，哪個受託人在 48 小時內解決了最高百分比的指派 bug？提供受託人的使用者名稱。</question>
    <answer>alex_eng</answer>
 </qa_pair>
 ```
 
-This question is good because:
-- Requires filtering bugs by date, priority, and status
-- Needs to group by assignee and calculate resolution rates
-- Requires understanding timestamps to determine 48-hour windows
-- Tests pagination (potentially many bugs to process)
-- Answer is a single username
-- Based on historical data from specific time period
+這個問題好在：
+- 需要按日期、優先級和狀態過濾 bug
+- 需要按受託人分組並計算解決率
+- 需要理解時間戳記以確定 48 小時窗口
+- 測試分頁（可能有很多 bug 要處理）
+- 答案是單一使用者名稱
+- 基於特定時間段的歷史資料
 
-**Example 4: Requires synthesis across multiple data types (CRM MCP)**
+**範例 4：需要跨多種資料類型綜合（CRM MCP）**
 ```xml
 <qa_pair>
-   <question>Find the account that upgraded from the Starter to Enterprise plan in Q4 2023 and had the highest annual contract value. What industry does this account operate in?</question>
+   <question>找出在 2023 年第四季從 Starter 升級到 Enterprise 方案且年合約價值最高的帳戶。這個帳戶屬於什麼行業？</question>
    <answer>Healthcare</answer>
 </qa_pair>
 ```
 
-This question is good because:
-- Requires understanding subscription tier changes
-- Needs to identify upgrade events in specific timeframe
-- Requires comparing contract values
-- Must access account industry information
-- Answer is simple and verifiable
-- Based on completed historical transactions
+這個問題好在：
+- 需要理解訂閱層級變更
+- 需要識別特定時間範圍內的升級事件
+- 需要比較合約價值
+- 必須存取帳戶行業資訊
+- 答案簡單且可驗證
+- 基於已完成的歷史交易
 
-### Poor Questions
+### 差的問題
 
-**Example 1: Answer changes over time**
+**範例 1：答案會隨時間改變**
 ```xml
 <qa_pair>
-   <question>How many open issues are currently assigned to the engineering team?</question>
+   <question>目前有多少開放問題指派給工程團隊？</question>
    <answer>47</answer>
 </qa_pair>
 ```
 
-This question is poor because:
-- The answer will change as issues are created, closed, or reassigned
-- Not based on stable/stationary data
-- Relies on "current state" which is dynamic
+這個問題差在：
+- 答案會隨著問題建立、關閉或重新指派而改變
+- 不是基於穩定/固定的資料
+- 依賴動態的「目前狀態」
 
-**Example 2: Too easy with keyword search**
+**範例 2：用關鍵字搜尋太容易**
 ```xml
 <qa_pair>
-   <question>Find the pull request with title "Add authentication feature" and tell me who created it.</question>
+   <question>找出標題為「Add authentication feature」的拉取請求，告訴我誰建立的。</question>
    <answer>developer123</answer>
 </qa_pair>
 ```
 
-This question is poor because:
-- Can be solved with a straightforward keyword search for exact title
-- Doesn't require deep exploration or understanding
-- No synthesis or analysis needed
+這個問題差在：
+- 可以用直接的精確標題關鍵字搜尋解決
+- 不需要深入探索或理解
+- 不需要綜合或分析
 
-**Example 3: Ambiguous answer format**
+**範例 3：答案格式模糊**
 ```xml
 <qa_pair>
-   <question>List all the repositories that have Python as their primary language.</question>
+   <question>列出所有以 Python 為主要語言的儲存庫。</question>
    <answer>repo1, repo2, repo3, data-pipeline, ml-tools</answer>
 </qa_pair>
 ```
 
-This question is poor because:
-- Answer is a list that could be returned in any order
-- Difficult to verify with direct string comparison
-- LLM might format differently (JSON array, comma-separated, newline-separated)
-- Better to ask for a specific aggregate (count) or superlative (most stars)
+這個問題差在：
+- 答案是可能以任何順序回傳的清單
+- 難以用直接字串比較驗證
+- LLM 可能格式不同（JSON 陣列、逗號分隔、換行分隔）
+- 最好問特定彙總（計數）或最高級（最多星標）
 
-## Verification Process
+## 驗證流程
 
-After creating evaluations:
+建立評估後：
 
-1. **Examine the XML file** to understand the schema
-2. **Load each task instruction** and in parallel using the MCP server and tools, identify the correct answer by attempting to solve the task YOURSELF
-3. **Flag any operations** that require WRITE or DESTRUCTIVE operations
-4. **Accumulate all CORRECT answers** and replace any incorrect answers in the document
-5. **Remove any `<qa_pair>`** that require WRITE or DESTRUCTIVE operations
+1. **檢查 XML 檔案**以了解 schema
+2. **載入每個任務指示**，並行使用 MCP 伺服器和工具，透過自己嘗試解決任務來識別正確答案
+3. **標記任何操作**需要寫入或破壞性操作
+4. **累積所有正確答案**並替換文件中任何不正確的答案
+5. **移除任何 `<qa_pair>`** 需要寫入或破壞性操作
 
-Remember to parallelize solving tasks to avoid running out of context, then accumulate all answers and make changes to the file at the end.
+記得並行解決任務以避免耗盡上下文，然後累積所有答案並在最後對檔案進行更改。
 
-## Tips for Creating Quality Evaluations
+## 建立高品質評估的技巧
 
-1. **Think Hard and Plan Ahead** before generating tasks
-2. **Parallelize Where Opportunity Arises** to speed up the process and manage context
-3. **Focus on Realistic Use Cases** that humans would actually want to accomplish
-4. **Create Challenging Questions** that test the limits of the MCP server's capabilities
-5. **Ensure Stability** by using historical data and closed concepts
-6. **Verify Answers** by solving the questions yourself using the MCP server tools
-7. **Iterate and Refine** based on what you learn during the process
+1. **在生成任務前深思熟慮並提前計劃**
+2. **在有機會時並行化**以加速流程並管理上下文
+3. **專注於真實使用案例**，人類實際想要完成的事情
+4. **建立具挑戰性的問題**測試 MCP 伺服器能力的極限
+5. **確保穩定性**使用歷史資料和已關閉的概念
+6. **驗證答案**自己使用 MCP 伺服器工具解決問題
+7. **迭代和精進**基於過程中學到的東西
 
 ---
 
-# Running Evaluations
+# 執行評估
 
-After creating your evaluation file, you can use the provided evaluation harness to test your MCP server.
+建立評估檔案後，您可以使用提供的評估工具來測試您的 MCP 伺服器。
 
-## Setup
+## 設定
 
-1. **Install Dependencies**
+1. **安裝相依套件**
 
    ```bash
    pip install -r scripts/requirements.txt
    ```
 
-   Or install manually:
+   或手動安裝：
    ```bash
    pip install anthropic mcp
    ```
 
-2. **Set API Key**
+2. **設定 API 金鑰**
 
    ```bash
    export ANTHROPIC_API_KEY=your_api_key_here
    ```
 
-## Evaluation File Format
+## 評估檔案格式
 
-Evaluation files use XML format with `<qa_pair>` elements:
+評估檔案使用包含 `<qa_pair>` 元素的 XML 格式：
 
 ```xml
 <evaluation>
    <qa_pair>
-      <question>Find the project created in Q2 2024 with the highest number of completed tasks. What is the project name?</question>
+      <question>找出 2024 年第二季建立的完成任務數最多的專案。專案名稱是什麼？</question>
       <answer>Website Redesign</answer>
    </qa_pair>
    <qa_pair>
-      <question>Search for issues labeled as "bug" that were closed in March 2024. Which user closed the most issues? Provide their username.</question>
+      <question>搜尋 2024 年 3 月關閉的標記為「bug」的問題。哪個使用者關閉了最多問題？提供他們的使用者名稱。</question>
       <answer>sarah_dev</answer>
    </qa_pair>
 </evaluation>
 ```
 
-## Running Evaluations
+## 執行評估
 
-The evaluation script (`scripts/evaluation.py`) supports three transport types:
+評估腳本（`scripts/evaluation.py`）支援三種傳輸類型：
 
-**Important:**
-- **stdio transport**: The evaluation script automatically launches and manages the MCP server process for you. Do not run the server manually.
-- **sse/http transports**: You must start the MCP server separately before running the evaluation. The script connects to the already-running server at the specified URL.
+**重要：**
+- **stdio 傳輸**：評估腳本會自動啟動和管理 MCP 伺服器程序。不要手動執行伺服器。
+- **sse/http 傳輸**：您必須在執行評估前單獨啟動 MCP 伺服器。腳本連接到已在指定 URL 執行的伺服器。
 
-### 1. Local STDIO Server
+### 1. 本地 STDIO 伺服器
 
-For locally-run MCP servers (script launches the server automatically):
+對於本地執行的 MCP 伺服器（腳本自動啟動伺服器）：
 
 ```bash
 python scripts/evaluation.py \
@@ -435,7 +435,7 @@ python scripts/evaluation.py \
   evaluation.xml
 ```
 
-With environment variables:
+使用環境變數：
 ```bash
 python scripts/evaluation.py \
   -t stdio \
@@ -446,9 +446,9 @@ python scripts/evaluation.py \
   evaluation.xml
 ```
 
-### 2. Server-Sent Events (SSE)
+### 2. Server-Sent Events（SSE）
 
-For SSE-based MCP servers (you must start the server first):
+對於基於 SSE 的 MCP 伺服器（您必須先啟動伺服器）：
 
 ```bash
 python scripts/evaluation.py \
@@ -459,9 +459,9 @@ python scripts/evaluation.py \
   evaluation.xml
 ```
 
-### 3. HTTP (Streamable HTTP)
+### 3. HTTP（Streamable HTTP）
 
-For HTTP-based MCP servers (you must start the server first):
+對於基於 HTTP 的 MCP 伺服器（您必須先啟動伺服器）：
 
 ```bash
 python scripts/evaluation.py \
@@ -471,7 +471,7 @@ python scripts/evaluation.py \
   evaluation.xml
 ```
 
-## Command-Line Options
+## 命令列選項
 
 ```
 usage: evaluation.py [-h] [-t {stdio,sse,http}] [-m MODEL] [-c COMMAND]
@@ -479,44 +479,44 @@ usage: evaluation.py [-h] [-t {stdio,sse,http}] [-m MODEL] [-c COMMAND]
                      [-H HEADERS [HEADERS ...]] [-o OUTPUT]
                      eval_file
 
-positional arguments:
-  eval_file             Path to evaluation XML file
+位置參數：
+  eval_file             評估 XML 檔案的路徑
 
-optional arguments:
-  -h, --help            Show help message
-  -t, --transport       Transport type: stdio, sse, or http (default: stdio)
-  -m, --model           Claude model to use (default: claude-3-7-sonnet-20250219)
-  -o, --output          Output file for report (default: print to stdout)
+可選參數：
+  -h, --help            顯示說明訊息
+  -t, --transport       傳輸類型：stdio、sse 或 http（預設：stdio）
+  -m, --model           要使用的 Claude 模型（預設：claude-3-7-sonnet-20250219）
+  -o, --output          報告輸出檔案（預設：列印到 stdout）
 
-stdio options:
-  -c, --command         Command to run MCP server (e.g., python, node)
-  -a, --args            Arguments for the command (e.g., server.py)
-  -e, --env             Environment variables in KEY=VALUE format
+stdio 選項：
+  -c, --command         執行 MCP 伺服器的命令（例如 python、node）
+  -a, --args            命令的參數（例如 server.py）
+  -e, --env             KEY=VALUE 格式的環境變數
 
-sse/http options:
-  -u, --url             MCP server URL
-  -H, --header          HTTP headers in 'Key: Value' format
+sse/http 選項：
+  -u, --url             MCP 伺服器 URL
+  -H, --header          'Key: Value' 格式的 HTTP 標頭
 ```
 
-## Output
+## 輸出
 
-The evaluation script generates a detailed report including:
+評估腳本生成詳細報告，包括：
 
-- **Summary Statistics**:
-  - Accuracy (correct/total)
-  - Average task duration
-  - Average tool calls per task
-  - Total tool calls
+- **摘要統計**：
+  - 準確率（正確/總數）
+  - 平均任務持續時間
+  - 每個任務的平均工具呼叫數
+  - 總工具呼叫數
 
-- **Per-Task Results**:
-  - Prompt and expected response
-  - Actual response from the agent
-  - Whether the answer was correct (✅/❌)
-  - Duration and tool call details
-  - Agent's summary of its approach
-  - Agent's feedback on the tools
+- **每個任務結果**：
+  - 提示和預期回應
+  - 代理的實際回應
+  - 答案是否正確（✅/❌）
+  - 持續時間和工具呼叫詳情
+  - 代理對其方法的總結
+  - 代理對工具的回饋
 
-### Save Report to File
+### 將報告儲存到檔案
 
 ```bash
 python scripts/evaluation.py \
@@ -527,37 +527,37 @@ python scripts/evaluation.py \
   evaluation.xml
 ```
 
-## Complete Example Workflow
+## 完整範例工作流程
 
-Here's a complete example of creating and running an evaluation:
+這是建立和執行評估的完整範例：
 
-1. **Create your evaluation file** (`my_evaluation.xml`):
+1. **建立您的評估檔案**（`my_evaluation.xml`）：
 
 ```xml
 <evaluation>
    <qa_pair>
-      <question>Find the user who created the most issues in January 2024. What is their username?</question>
+      <question>找出 2024 年 1 月建立最多問題的使用者。他們的使用者名稱是什麼？</question>
       <answer>alice_developer</answer>
    </qa_pair>
    <qa_pair>
-      <question>Among all pull requests merged in Q1 2024, which repository had the highest number? Provide the repository name.</question>
+      <question>在 2024 年第一季合併的所有拉取請求中，哪個儲存庫數量最多？提供儲存庫名稱。</question>
       <answer>backend-api</answer>
    </qa_pair>
    <qa_pair>
-      <question>Find the project that was completed in December 2023 and had the longest duration from start to finish. How many days did it take?</question>
+      <question>找出 2023 年 12 月完成且從開始到結束持續時間最長的專案。花了多少天？</question>
       <answer>127</answer>
    </qa_pair>
 </evaluation>
 ```
 
-2. **Install dependencies**:
+2. **安裝相依套件**：
 
 ```bash
 pip install -r scripts/requirements.txt
 export ANTHROPIC_API_KEY=your_api_key
 ```
 
-3. **Run evaluation**:
+3. **執行評估**：
 
 ```bash
 python scripts/evaluation.py \
@@ -569,34 +569,34 @@ python scripts/evaluation.py \
   my_evaluation.xml
 ```
 
-4. **Review the report** in `github_eval_report.md` to:
-   - See which questions passed/failed
-   - Read the agent's feedback on your tools
-   - Identify areas for improvement
-   - Iterate on your MCP server design
+4. **檢視報告** `github_eval_report.md` 以：
+   - 查看哪些問題通過/失敗
+   - 閱讀代理對您工具的回饋
+   - 識別改進領域
+   - 迭代您的 MCP 伺服器設計
 
-## Troubleshooting
+## 疑難排解
 
-### Connection Errors
+### 連接錯誤
 
-If you get connection errors:
-- **STDIO**: Verify the command and arguments are correct
-- **SSE/HTTP**: Check the URL is accessible and headers are correct
-- Ensure any required API keys are set in environment variables or headers
+如果您遇到連接錯誤：
+- **STDIO**：驗證命令和參數是否正確
+- **SSE/HTTP**：檢查 URL 是否可存取且標頭是否正確
+- 確保任何必要的 API 金鑰已在環境變數或標頭中設定
 
-### Low Accuracy
+### 低準確率
 
-If many evaluations fail:
-- Review the agent's feedback for each task
-- Check if tool descriptions are clear and comprehensive
-- Verify input parameters are well-documented
-- Consider whether tools return too much or too little data
-- Ensure error messages are actionable
+如果許多評估失敗：
+- 檢視每個任務的代理回饋
+- 檢查工具描述是否清晰且全面
+- 驗證輸入參數是否有良好的文件
+- 考慮工具是否回傳太多或太少資料
+- 確保錯誤訊息是可操作的
 
-### Timeout Issues
+### 逾時問題
 
-If tasks are timing out:
-- Use a more capable model (e.g., `claude-3-7-sonnet-20250219`)
-- Check if tools are returning too much data
-- Verify pagination is working correctly
-- Consider simplifying complex questions
+如果任務逾時：
+- 使用更強大的模型（例如 `claude-3-7-sonnet-20250219`）
+- 檢查工具是否回傳太多資料
+- 驗證分頁是否正常運作
+- 考慮簡化複雜問題

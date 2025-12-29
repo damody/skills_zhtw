@@ -1,72 +1,72 @@
-# DOCX Library Tutorial
+# DOCX 函式庫教學
 
-Generate .docx files with JavaScript/TypeScript.
+使用 JavaScript/TypeScript 生成 .docx 檔案。
 
-**Important: Read this entire document before starting.** Critical formatting rules and common pitfalls are covered throughout - skipping sections may result in corrupted files or rendering issues.
+**重要：開始之前請閱讀整份文件。** 關鍵的格式規則和常見陷阱會在整份文件中說明 - 跳過章節可能會導致檔案損壞或渲染問題。
 
-## Setup
-Assumes docx is already installed globally
-If not installed: `npm install -g docx`
+## 設定
+假設 docx 已全域安裝
+如未安裝：`npm install -g docx`
 
 ```javascript
-const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, Media, 
-        Header, Footer, AlignmentType, PageOrientation, LevelFormat, ExternalHyperlink, 
-        InternalHyperlink, TableOfContents, HeadingLevel, BorderStyle, WidthType, TabStopType, 
+const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, Media,
+        Header, Footer, AlignmentType, PageOrientation, LevelFormat, ExternalHyperlink,
+        InternalHyperlink, TableOfContents, HeadingLevel, BorderStyle, WidthType, TabStopType,
         TabStopPosition, UnderlineType, ShadingType, VerticalAlign, SymbolRun, PageNumber,
         FootnoteReferenceRun, Footnote, PageBreak } = require('docx');
 
-// Create & Save
-const doc = new Document({ sections: [{ children: [/* content */] }] });
+// 建立與儲存
+const doc = new Document({ sections: [{ children: [/* 內容 */] }] });
 Packer.toBuffer(doc).then(buffer => fs.writeFileSync("doc.docx", buffer)); // Node.js
-Packer.toBlob(doc).then(blob => { /* download logic */ }); // Browser
+Packer.toBlob(doc).then(blob => { /* 下載邏輯 */ }); // 瀏覽器
 ```
 
-## Text & Formatting
+## 文字與格式
 ```javascript
-// IMPORTANT: Never use \n for line breaks - always use separate Paragraph elements
-// ❌ WRONG: new TextRun("Line 1\nLine 2")
-// ✅ CORRECT: new Paragraph({ children: [new TextRun("Line 1")] }), new Paragraph({ children: [new TextRun("Line 2")] })
+// 重要：永遠不要使用 \n 換行 - 請使用獨立的 Paragraph 元素
+// ❌ 錯誤：new TextRun("第一行\n第二行")
+// ✅ 正確：new Paragraph({ children: [new TextRun("第一行")] }), new Paragraph({ children: [new TextRun("第二行")] })
 
-// Basic text with all formatting options
+// 包含所有格式選項的基本文字
 new Paragraph({
   alignment: AlignmentType.CENTER,
   spacing: { before: 200, after: 200 },
   indent: { left: 720, right: 720 },
   children: [
-    new TextRun({ text: "Bold", bold: true }),
-    new TextRun({ text: "Italic", italics: true }),
-    new TextRun({ text: "Underlined", underline: { type: UnderlineType.DOUBLE, color: "FF0000" } }),
-    new TextRun({ text: "Colored", color: "FF0000", size: 28, font: "Arial" }), // Arial default
-    new TextRun({ text: "Highlighted", highlight: "yellow" }),
-    new TextRun({ text: "Strikethrough", strike: true }),
+    new TextRun({ text: "粗體", bold: true }),
+    new TextRun({ text: "斜體", italics: true }),
+    new TextRun({ text: "底線", underline: { type: UnderlineType.DOUBLE, color: "FF0000" } }),
+    new TextRun({ text: "彩色", color: "FF0000", size: 28, font: "Arial" }), // 預設 Arial
+    new TextRun({ text: "螢光標記", highlight: "yellow" }),
+    new TextRun({ text: "刪除線", strike: true }),
     new TextRun({ text: "x2", superScript: true }),
     new TextRun({ text: "H2O", subScript: true }),
-    new TextRun({ text: "SMALL CAPS", smallCaps: true }),
-    new SymbolRun({ char: "2022", font: "Symbol" }), // Bullet •
-    new SymbolRun({ char: "00A9", font: "Arial" })   // Copyright © - Arial for symbols
+    new TextRun({ text: "小型大寫", smallCaps: true }),
+    new SymbolRun({ char: "2022", font: "Symbol" }), // 項目符號 •
+    new SymbolRun({ char: "00A9", font: "Arial" })   // 版權符號 © - 使用 Arial 顯示符號
   ]
 })
 ```
 
-## Styles & Professional Formatting
+## 樣式與專業格式
 
 ```javascript
 const doc = new Document({
   styles: {
-    default: { document: { run: { font: "Arial", size: 24 } } }, // 12pt default
+    default: { document: { run: { font: "Arial", size: 24 } } }, // 預設 12pt
     paragraphStyles: [
-      // Document title style - override built-in Title style
+      // 文件標題樣式 - 覆寫內建 Title 樣式
       { id: "Title", name: "Title", basedOn: "Normal",
         run: { size: 56, bold: true, color: "000000", font: "Arial" },
         paragraph: { spacing: { before: 240, after: 120 }, alignment: AlignmentType.CENTER } },
-      // IMPORTANT: Override built-in heading styles by using their exact IDs
+      // 重要：使用精確的 ID 覆寫內建標題樣式
       { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
         run: { size: 32, bold: true, color: "000000", font: "Arial" }, // 16pt
-        paragraph: { spacing: { before: 240, after: 240 }, outlineLevel: 0 } }, // Required for TOC
+        paragraph: { spacing: { before: 240, after: 240 }, outlineLevel: 0 } }, // 目錄需要此設定
       { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
         run: { size: 28, bold: true, color: "000000", font: "Arial" }, // 14pt
         paragraph: { spacing: { before: 180, after: 180 }, outlineLevel: 1 } },
-      // Custom styles use your own IDs
+      // 自訂樣式使用您自己的 ID
       { id: "myStyle", name: "My Style", basedOn: "Normal",
         run: { size: 28, bold: true, color: "000000" },
         paragraph: { spacing: { after: 120 }, alignment: AlignmentType.CENTER } }
@@ -77,39 +77,39 @@ const doc = new Document({
   sections: [{
     properties: { page: { margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } } },
     children: [
-      new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun("Document Title")] }), // Uses overridden Title style
-      new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Heading 1")] }), // Uses overridden Heading1 style
-      new Paragraph({ style: "myStyle", children: [new TextRun("Custom paragraph style")] }),
+      new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun("文件標題")] }), // 使用覆寫的 Title 樣式
+      new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("標題 1")] }), // 使用覆寫的 Heading1 樣式
+      new Paragraph({ style: "myStyle", children: [new TextRun("自訂段落樣式")] }),
       new Paragraph({ children: [
-        new TextRun("Normal with "),
-        new TextRun({ text: "custom char style", style: "myCharStyle" })
+        new TextRun("一般文字加上 "),
+        new TextRun({ text: "自訂字元樣式", style: "myCharStyle" })
       ]})
     ]
   }]
 });
 ```
 
-**Professional Font Combinations:**
-- **Arial (Headers) + Arial (Body)** - Most universally supported, clean and professional
-- **Times New Roman (Headers) + Arial (Body)** - Classic serif headers with modern sans-serif body
-- **Georgia (Headers) + Verdana (Body)** - Optimized for screen reading, elegant contrast
+**專業字體組合：**
+- **Arial（標題）+ Arial（內文）** - 最通用支援，乾淨專業
+- **Times New Roman（標題）+ Arial（內文）** - 經典襯線標題搭配現代無襯線內文
+- **Georgia（標題）+ Verdana（內文）** - 針對螢幕閱讀最佳化，優雅對比
 
-**Key Styling Principles:**
-- **Override built-in styles**: Use exact IDs like "Heading1", "Heading2", "Heading3" to override Word's built-in heading styles
-- **HeadingLevel constants**: `HeadingLevel.HEADING_1` uses "Heading1" style, `HeadingLevel.HEADING_2` uses "Heading2" style, etc.
-- **Include outlineLevel**: Set `outlineLevel: 0` for H1, `outlineLevel: 1` for H2, etc. to ensure TOC works correctly
-- **Use custom styles** instead of inline formatting for consistency
-- **Set a default font** using `styles.default.document.run.font` - Arial is universally supported
-- **Establish visual hierarchy** with different font sizes (titles > headers > body)
-- **Add proper spacing** with `before` and `after` paragraph spacing
-- **Use colors sparingly**: Default to black (000000) and shades of gray for titles and headings (heading 1, heading 2, etc.)
-- **Set consistent margins** (1440 = 1 inch is standard)
+**關鍵樣式原則：**
+- **覆寫內建樣式**：使用精確的 ID 如 "Heading1"、"Heading2"、"Heading3" 來覆寫 Word 的內建標題樣式
+- **HeadingLevel 常數**：`HeadingLevel.HEADING_1` 使用 "Heading1" 樣式，`HeadingLevel.HEADING_2` 使用 "Heading2" 樣式，以此類推
+- **包含 outlineLevel**：設定 H1 為 `outlineLevel: 0`，H2 為 `outlineLevel: 1`，以確保目錄正常運作
+- **使用自訂樣式**取代行內格式以保持一致性
+- **設定預設字體**使用 `styles.default.document.run.font` - 建議使用 Arial，因為它被廣泛支援
+- **建立視覺層次**使用不同字體大小（標題 > 子標題 > 內文）
+- **加入適當間距**使用 `before` 和 `after` 段落間距
+- **謹慎使用顏色**：標題預設使用黑色（000000）和灰色深淺
+- **設定一致的邊界**（1440 = 1 英吋是標準值）
 
 
-## Lists (ALWAYS USE PROPER LISTS - NEVER USE UNICODE BULLETS)
+## 清單（務必使用正確的清單 - 永遠不要使用 Unicode 項目符號）
 ```javascript
-// Bullets - ALWAYS use the numbering config, NOT unicode symbols
-// CRITICAL: Use LevelFormat.BULLET constant, NOT the string "bullet"
+// 項目符號 - 務必使用 numbering 設定，不要使用 unicode 符號
+// 關鍵：使用 LevelFormat.BULLET 常數，不是字串 "bullet"
 const doc = new Document({
   numbering: {
     config: [
@@ -119,73 +119,73 @@ const doc = new Document({
       { reference: "first-numbered-list",
         levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT,
           style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] },
-      { reference: "second-numbered-list", // Different reference = restarts at 1
+      { reference: "second-numbered-list", // 不同的 reference = 從 1 重新開始
         levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT,
           style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] }
     ]
   },
   sections: [{
     children: [
-      // Bullet list items
+      // 項目符號清單項目
       new Paragraph({ numbering: { reference: "bullet-list", level: 0 },
-        children: [new TextRun("First bullet point")] }),
+        children: [new TextRun("第一個項目")] }),
       new Paragraph({ numbering: { reference: "bullet-list", level: 0 },
-        children: [new TextRun("Second bullet point")] }),
-      // Numbered list items
+        children: [new TextRun("第二個項目")] }),
+      // 編號清單項目
       new Paragraph({ numbering: { reference: "first-numbered-list", level: 0 },
-        children: [new TextRun("First numbered item")] }),
+        children: [new TextRun("第一個編號項目")] }),
       new Paragraph({ numbering: { reference: "first-numbered-list", level: 0 },
-        children: [new TextRun("Second numbered item")] }),
-      // ⚠️ CRITICAL: Different reference = INDEPENDENT list that restarts at 1
-      // Same reference = CONTINUES previous numbering
+        children: [new TextRun("第二個編號項目")] }),
+      // ⚠️ 關鍵：不同的 reference = 獨立的清單，從 1 重新開始
+      // 相同的 reference = 繼續之前的編號
       new Paragraph({ numbering: { reference: "second-numbered-list", level: 0 },
-        children: [new TextRun("Starts at 1 again (because different reference)")] })
+        children: [new TextRun("重新從 1 開始（因為不同的 reference）")] })
     ]
   }]
 });
 
-// ⚠️ CRITICAL NUMBERING RULE: Each reference creates an INDEPENDENT numbered list
-// - Same reference = continues numbering (1, 2, 3... then 4, 5, 6...)
-// - Different reference = restarts at 1 (1, 2, 3... then 1, 2, 3...)
-// Use unique reference names for each separate numbered section!
+// ⚠️ 關鍵編號規則：每個 reference 建立一個獨立的編號清單
+// - 相同 reference = 繼續編號（1, 2, 3... 然後 4, 5, 6...）
+// - 不同 reference = 從 1 重新開始（1, 2, 3... 然後 1, 2, 3...）
+// 為每個獨立的編號區段使用唯一的 reference 名稱！
 
-// ⚠️ CRITICAL: NEVER use unicode bullets - they create fake lists that don't work properly
-// new TextRun("• Item")           // WRONG
-// new SymbolRun({ char: "2022" }) // WRONG
-// ✅ ALWAYS use numbering config with LevelFormat.BULLET for real Word lists
+// ⚠️ 關鍵：永遠不要使用 unicode 項目符號 - 它們會建立無法正常運作的假清單
+// new TextRun("• 項目")           // 錯誤
+// new SymbolRun({ char: "2022" }) // 錯誤
+// ✅ 務必使用 numbering 設定搭配 LevelFormat.BULLET 建立真正的 Word 清單
 ```
 
-## Tables
+## 表格
 ```javascript
-// Complete table with margins, borders, headers, and bullet points
+// 包含邊界、框線、標題列和項目符號的完整表格
 const tableBorder = { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" };
 const cellBorders = { top: tableBorder, bottom: tableBorder, left: tableBorder, right: tableBorder };
 
 new Table({
-  columnWidths: [4680, 4680], // ⚠️ CRITICAL: Set column widths at table level - values in DXA (twentieths of a point)
-  margins: { top: 100, bottom: 100, left: 180, right: 180 }, // Set once for all cells
+  columnWidths: [4680, 4680], // ⚠️ 關鍵：在表格層級設定欄寬 - 值使用 DXA（點的二十分之一）
+  margins: { top: 100, bottom: 100, left: 180, right: 180 }, // 為所有儲存格設定一次
   rows: [
     new TableRow({
       tableHeader: true,
       children: [
         new TableCell({
           borders: cellBorders,
-          width: { size: 4680, type: WidthType.DXA }, // ALSO set width on each cell
-          // ⚠️ CRITICAL: Always use ShadingType.CLEAR to prevent black backgrounds in Word.
-          shading: { fill: "D5E8F0", type: ShadingType.CLEAR }, 
+          width: { size: 4680, type: WidthType.DXA }, // 也要在每個儲存格設定寬度
+          // ⚠️ 關鍵：務必使用 ShadingType.CLEAR 以防止在 Word 中出現黑色背景。
+          shading: { fill: "D5E8F0", type: ShadingType.CLEAR },
           verticalAlign: VerticalAlign.CENTER,
-          children: [new Paragraph({ 
+          children: [new Paragraph({
             alignment: AlignmentType.CENTER,
-            children: [new TextRun({ text: "Header", bold: true, size: 22 })]
+            children: [new TextRun({ text: "標題", bold: true, size: 22 })]
           })]
         }),
         new TableCell({
           borders: cellBorders,
-          width: { size: 4680, type: WidthType.DXA }, // ALSO set width on each cell
+          width: { size: 4680, type: WidthType.DXA }, // 也要在每個儲存格設定寬度
           shading: { fill: "D5E8F0", type: ShadingType.CLEAR },
-          children: [new Paragraph({ 
+          children: [new Paragraph({
             alignment: AlignmentType.CENTER,
-            children: [new TextRun({ text: "Bullet Points", bold: true, size: 22 })]
+            children: [new TextRun({ text: "項目符號", bold: true, size: 22 })]
           })]
         })
       ]
@@ -194,20 +194,20 @@ new Table({
       children: [
         new TableCell({
           borders: cellBorders,
-          width: { size: 4680, type: WidthType.DXA }, // ALSO set width on each cell
-          children: [new Paragraph({ children: [new TextRun("Regular data")] })]
+          width: { size: 4680, type: WidthType.DXA }, // 也要在每個儲存格設定寬度
+          children: [new Paragraph({ children: [new TextRun("一般資料")] })]
         }),
         new TableCell({
           borders: cellBorders,
-          width: { size: 4680, type: WidthType.DXA }, // ALSO set width on each cell
+          width: { size: 4680, type: WidthType.DXA }, // 也要在每個儲存格設定寬度
           children: [
-            new Paragraph({ 
+            new Paragraph({
               numbering: { reference: "bullet-list", level: 0 },
-              children: [new TextRun("First bullet point")] 
+              children: [new TextRun("第一個項目")]
             }),
-            new Paragraph({ 
+            new Paragraph({
               numbering: { reference: "bullet-list", level: 0 },
-              children: [new TextRun("Second bullet point")] 
+              children: [new TextRun("第二個項目")]
             })
           ]
         })
@@ -217,23 +217,23 @@ new Table({
 })
 ```
 
-**IMPORTANT: Table Width & Borders**
-- Use BOTH `columnWidths: [width1, width2, ...]` array AND `width: { size: X, type: WidthType.DXA }` on each cell
-- Values in DXA (twentieths of a point): 1440 = 1 inch, Letter usable width = 9360 DXA (with 1" margins)
-- Apply borders to individual `TableCell` elements, NOT the `Table` itself
+**重要：表格寬度與框線**
+- 同時使用 `columnWidths: [width1, width2, ...]` 陣列和每個儲存格的 `width: { size: X, type: WidthType.DXA }`
+- 值使用 DXA（點的二十分之一）：1440 = 1 英吋，Letter 可用寬度 = 9360 DXA（使用 1 英吋邊界）
+- 將框線套用到個別的 `TableCell` 元素，而非 `Table` 本身
 
-**Precomputed Column Widths (Letter size with 1" margins = 9360 DXA total):**
-- **2 columns:** `columnWidths: [4680, 4680]` (equal width)
-- **3 columns:** `columnWidths: [3120, 3120, 3120]` (equal width)
+**預先計算的欄寬（Letter 尺寸使用 1 英吋邊界 = 總共 9360 DXA）：**
+- **2 欄：** `columnWidths: [4680, 4680]`（等寬）
+- **3 欄：** `columnWidths: [3120, 3120, 3120]`（等寬）
 
-## Links & Navigation
+## 連結與導覽
 ```javascript
-// TOC (requires headings) - CRITICAL: Use HeadingLevel only, NOT custom styles
-// ❌ WRONG: new Paragraph({ heading: HeadingLevel.HEADING_1, style: "customHeader", children: [new TextRun("Title")] })
-// ✅ CORRECT: new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Title")] })
-new TableOfContents("Table of Contents", { hyperlink: true, headingStyleRange: "1-3" }),
+// 目錄（需要標題）- 關鍵：只使用 HeadingLevel，不要使用自訂樣式
+// ❌ 錯誤：new Paragraph({ heading: HeadingLevel.HEADING_1, style: "customHeader", children: [new TextRun("標題")] })
+// ✅ 正確：new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("標題")] })
+new TableOfContents("目錄", { hyperlink: true, headingStyleRange: "1-3" }),
 
-// External link
+// 外部連結
 new Paragraph({
   children: [new ExternalHyperlink({
     children: [new TextRun({ text: "Google", style: "Hyperlink" })],
@@ -241,79 +241,79 @@ new Paragraph({
   })]
 }),
 
-// Internal link & bookmark
+// 內部連結與書籤
 new Paragraph({
   children: [new InternalHyperlink({
-    children: [new TextRun({ text: "Go to Section", style: "Hyperlink" })],
+    children: [new TextRun({ text: "前往章節", style: "Hyperlink" })],
     anchor: "section1"
   })]
 }),
 new Paragraph({
-  children: [new TextRun("Section Content")],
+  children: [new TextRun("章節內容")],
   bookmark: { id: "section1", name: "section1" }
 }),
 ```
 
-## Images & Media
+## 圖片與媒體
 ```javascript
-// Basic image with sizing & positioning
-// CRITICAL: Always specify 'type' parameter - it's REQUIRED for ImageRun
+// 包含尺寸與定位的基本圖片
+// 關鍵：務必指定 'type' 參數 - ImageRun 需要此參數
 new Paragraph({
   alignment: AlignmentType.CENTER,
   children: [new ImageRun({
-    type: "png", // NEW REQUIREMENT: Must specify image type (png, jpg, jpeg, gif, bmp, svg)
+    type: "png", // 新需求：必須指定圖片類型（png, jpg, jpeg, gif, bmp, svg）
     data: fs.readFileSync("image.png"),
-    transformation: { width: 200, height: 150, rotation: 0 }, // rotation in degrees
-    altText: { title: "Logo", description: "Company logo", name: "Name" } // IMPORTANT: All three fields are required
+    transformation: { width: 200, height: 150, rotation: 0 }, // rotation 使用角度
+    altText: { title: "標誌", description: "公司標誌", name: "名稱" } // 重要：三個欄位都是必要的
   })]
 })
 ```
 
-## Page Breaks
+## 分頁符號
 ```javascript
-// Manual page break
+// 手動分頁符號
 new Paragraph({ children: [new PageBreak()] }),
 
-// Page break before paragraph
+// 段落前分頁
 new Paragraph({
   pageBreakBefore: true,
-  children: [new TextRun("This starts on a new page")]
+  children: [new TextRun("這會從新頁面開始")]
 })
 
-// ⚠️ CRITICAL: NEVER use PageBreak standalone - it will create invalid XML that Word cannot open
-// ❌ WRONG: new PageBreak() 
-// ✅ CORRECT: new Paragraph({ children: [new PageBreak()] })
+// ⚠️ 關鍵：永遠不要單獨使用 PageBreak - 它會建立 Word 無法開啟的無效 XML
+// ❌ 錯誤：new PageBreak()
+// ✅ 正確：new Paragraph({ children: [new PageBreak()] })
 ```
 
-## Headers/Footers & Page Setup
+## 頁首/頁尾與頁面設定
 ```javascript
 const doc = new Document({
   sections: [{
     properties: {
       page: {
-        margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }, // 1440 = 1 inch
+        margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }, // 1440 = 1 英吋
         size: { orientation: PageOrientation.LANDSCAPE },
         pageNumbers: { start: 1, formatType: "decimal" } // "upperRoman", "lowerRoman", "upperLetter", "lowerLetter"
       }
     },
     headers: {
-      default: new Header({ children: [new Paragraph({ 
+      default: new Header({ children: [new Paragraph({
         alignment: AlignmentType.RIGHT,
-        children: [new TextRun("Header Text")]
+        children: [new TextRun("頁首文字")]
       })] })
     },
     footers: {
-      default: new Footer({ children: [new Paragraph({ 
+      default: new Footer({ children: [new Paragraph({
         alignment: AlignmentType.CENTER,
-        children: [new TextRun("Page "), new TextRun({ children: [PageNumber.CURRENT] }), new TextRun(" of "), new TextRun({ children: [PageNumber.TOTAL_PAGES] })]
+        children: [new TextRun("第 "), new TextRun({ children: [PageNumber.CURRENT] }), new TextRun(" 頁，共 "), new TextRun({ children: [PageNumber.TOTAL_PAGES] }), new TextRun(" 頁")]
       })] })
     },
-    children: [/* content */]
+    children: [/* 內容 */]
   }]
 });
 ```
 
-## Tabs
+## 定位點
 ```javascript
 new Paragraph({
   tabStops: [
@@ -321,30 +321,30 @@ new Paragraph({
     { type: TabStopType.CENTER, position: TabStopPosition.MAX / 2 },
     { type: TabStopType.RIGHT, position: TabStopPosition.MAX * 3 / 4 }
   ],
-  children: [new TextRun("Left\tCenter\tRight")]
+  children: [new TextRun("左\t中\t右")]
 })
 ```
 
-## Constants & Quick Reference
-- **Underlines:** `SINGLE`, `DOUBLE`, `WAVY`, `DASH`
-- **Borders:** `SINGLE`, `DOUBLE`, `DASHED`, `DOTTED`  
-- **Numbering:** `DECIMAL` (1,2,3), `UPPER_ROMAN` (I,II,III), `LOWER_LETTER` (a,b,c)
-- **Tabs:** `LEFT`, `CENTER`, `RIGHT`, `DECIMAL`
-- **Symbols:** `"2022"` (•), `"00A9"` (©), `"00AE"` (®), `"2122"` (™), `"00B0"` (°), `"F070"` (✓), `"F0FC"` (✗)
+## 常數與快速參考
+- **底線：** `SINGLE`、`DOUBLE`、`WAVY`、`DASH`
+- **框線：** `SINGLE`、`DOUBLE`、`DASHED`、`DOTTED`
+- **編號：** `DECIMAL` (1,2,3)、`UPPER_ROMAN` (I,II,III)、`LOWER_LETTER` (a,b,c)
+- **定位點：** `LEFT`、`CENTER`、`RIGHT`、`DECIMAL`
+- **符號：** `"2022"` (•)、`"00A9"` (©)、`"00AE"` (®)、`"2122"` (™)、`"00B0"` (°)、`"F070"` (✓)、`"F0FC"` (✗)
 
-## Critical Issues & Common Mistakes
-- **CRITICAL: PageBreak must ALWAYS be inside a Paragraph** - standalone PageBreak creates invalid XML that Word cannot open
-- **ALWAYS use ShadingType.CLEAR for table cell shading** - Never use ShadingType.SOLID (causes black background).
-- Measurements in DXA (1440 = 1 inch) | Each table cell needs ≥1 Paragraph | TOC requires HeadingLevel styles only
-- **ALWAYS use custom styles** with Arial font for professional appearance and proper visual hierarchy
-- **ALWAYS set a default font** using `styles.default.document.run.font` - Arial recommended
-- **ALWAYS use columnWidths array for tables** + individual cell widths for compatibility
-- **NEVER use unicode symbols for bullets** - always use proper numbering configuration with `LevelFormat.BULLET` constant (NOT the string "bullet")
-- **NEVER use \n for line breaks anywhere** - always use separate Paragraph elements for each line
-- **ALWAYS use TextRun objects within Paragraph children** - never use text property directly on Paragraph
-- **CRITICAL for images**: ImageRun REQUIRES `type` parameter - always specify "png", "jpg", "jpeg", "gif", "bmp", or "svg"
-- **CRITICAL for bullets**: Must use `LevelFormat.BULLET` constant, not string "bullet", and include `text: "•"` for the bullet character
-- **CRITICAL for numbering**: Each numbering reference creates an INDEPENDENT list. Same reference = continues numbering (1,2,3 then 4,5,6). Different reference = restarts at 1 (1,2,3 then 1,2,3). Use unique reference names for each separate numbered section!
-- **CRITICAL for TOC**: When using TableOfContents, headings must use HeadingLevel ONLY - do NOT add custom styles to heading paragraphs or TOC will break
-- **Tables**: Set `columnWidths` array + individual cell widths, apply borders to cells not table
-- **Set table margins at TABLE level** for consistent cell padding (avoids repetition per cell)
+## 關鍵問題與常見錯誤
+- **關鍵：PageBreak 必須始終放在 Paragraph 內** - 單獨的 PageBreak 會建立 Word 無法開啟的無效 XML
+- **務必使用 ShadingType.CLEAR 為表格儲存格著色** - 永遠不要使用 ShadingType.SOLID（會導致黑色背景）。
+- 測量值使用 DXA（1440 = 1 英吋）| 每個表格儲存格需要至少 1 個 Paragraph | 目錄只需要 HeadingLevel 樣式
+- **務必使用自訂樣式**搭配 Arial 字體以獲得專業外觀和適當的視覺層次
+- **務必設定預設字體**使用 `styles.default.document.run.font` - 建議使用 Arial
+- **務必為表格使用 columnWidths 陣列** + 個別儲存格寬度以確保相容性
+- **永遠不要使用 unicode 符號作為項目符號** - 務必使用正確的 numbering 設定搭配 `LevelFormat.BULLET` 常數（不是字串 "bullet"）
+- **永遠不要在任何地方使用 \n 換行** - 務必使用獨立的 Paragraph 元素作為每一行
+- **務必在 Paragraph children 中使用 TextRun 物件** - 永遠不要直接在 Paragraph 上使用 text 屬性
+- **圖片關鍵**：ImageRun 需要 `type` 參數 - 務必指定 "png"、"jpg"、"jpeg"、"gif"、"bmp" 或 "svg"
+- **項目符號關鍵**：必須使用 `LevelFormat.BULLET` 常數，不是字串 "bullet"，並包含 `text: "•"` 作為項目符號字元
+- **編號關鍵**：每個 numbering reference 建立一個獨立的清單。相同 reference = 繼續編號（1,2,3 然後 4,5,6）。不同 reference = 從 1 重新開始（1,2,3 然後 1,2,3）。為每個獨立的編號區段使用唯一的 reference 名稱！
+- **目錄關鍵**：使用 TableOfContents 時，標題必須只使用 HeadingLevel - 不要為標題段落加入自訂樣式，否則目錄會失效
+- **表格**：設定 `columnWidths` 陣列 + 個別儲存格寬度，將框線套用到儲存格而非表格
+- **在表格層級設定表格邊界**以獲得一致的儲存格內距（避免在每個儲存格重複設定）

@@ -1,130 +1,130 @@
 ---
-name: canvas-design
-description: Create beautiful visual art in .png and .pdf documents using design philosophy. You should use this skill when the user asks to create a poster, piece of art, design, or other static piece. Create original visual designs, never copying existing artists' work to avoid copyright violations.
-license: Complete terms in LICENSE.txt
+name: 畫布設計
+description: 使用設計哲學創建精美的 .png 和 .pdf 格式視覺藝術作品。當使用者要求創建海報、藝術作品、設計作品或其他靜態作品時，應使用此技能。創建原創視覺設計，絕不複製現有藝術家的作品以避免版權侵犯。
+license: 完整條款請見 LICENSE.txt
 ---
 
-These are instructions for creating design philosophies - aesthetic movements that are then EXPRESSED VISUALLY. Output only .md files, .pdf files, and .png files.
+以下是創建設計哲學的指南——這些美學運動將被視覺化地表達。僅輸出 .md 檔案、.pdf 檔案和 .png 檔案。
 
-Complete this in two steps:
-1. Design Philosophy Creation (.md file)
-2. Express by creating it on a canvas (.pdf file or .png file)
+請分兩個步驟完成：
+1. 設計哲學創建（.md 檔案）
+2. 在畫布上表達（.pdf 檔案或 .png 檔案）
 
-First, undertake this task:
+首先，執行此任務：
 
-## DESIGN PHILOSOPHY CREATION
+## 設計哲學創建
 
-To begin, create a VISUAL PHILOSOPHY (not layouts or templates) that will be interpreted through:
-- Form, space, color, composition
-- Images, graphics, shapes, patterns
-- Minimal text as visual accent
+開始時，創建一個視覺哲學（非版面或模板），將透過以下方式詮釋：
+- 形式、空間、色彩、構圖
+- 圖像、圖形、形狀、圖案
+- 極少文字作為視覺點綴
 
-### THE CRITICAL UNDERSTANDING
-- What is received: Some subtle input or instructions by the user that should be taken into account, but used as a foundation; it should not constrain creative freedom.
-- What is created: A design philosophy/aesthetic movement.
-- What happens next: Then, the same version receives the philosophy and EXPRESSES IT VISUALLY - creating artifacts that are 90% visual design, 10% essential text.
+### 關鍵理解
+- 接收內容：使用者提供的一些微妙輸入或指示，應納入考量，但僅作為基礎；不應限制創作自由。
+- 創建內容：設計哲學/美學運動。
+- 後續步驟：然後，同一版本接收哲學並將其視覺化表達——創建 90% 視覺設計、10% 必要文字的作品。
 
-Consider this approach:
-- Write a manifesto for an art movement
-- The next phase involves making the artwork
+考慮這種方法：
+- 為一個藝術運動撰寫宣言
+- 下一階段涉及創作藝術品
 
-The philosophy must emphasize: Visual expression. Spatial communication. Artistic interpretation. Minimal words.
+哲學必須強調：視覺表達。空間溝通。藝術詮釋。極少文字。
 
-### HOW TO GENERATE A VISUAL PHILOSOPHY
+### 如何生成視覺哲學
 
-**Name the movement** (1-2 words): "Brutalist Joy" / "Chromatic Silence" / "Metabolist Dreams"
+**命名運動**（1-2 個詞）：「粗獷主義的喜悅」/「色彩的沉默」/「代謝主義之夢」
 
-**Articulate the philosophy** (4-6 paragraphs - concise but complete):
+**闡述哲學**（4-6 段落——簡潔但完整）：
 
-To capture the VISUAL essence, express how the philosophy manifests through:
-- Space and form
-- Color and material
-- Scale and rhythm
-- Composition and balance
-- Visual hierarchy
+為捕捉視覺本質，表達哲學如何透過以下方面展現：
+- 空間與形式
+- 色彩與材質
+- 比例與韻律
+- 構圖與平衡
+- 視覺層次
 
-**CRITICAL GUIDELINES:**
-- **Avoid redundancy**: Each design aspect should be mentioned once. Avoid repeating points about color theory, spatial relationships, or typographic principles unless adding new depth.
-- **Emphasize craftsmanship REPEATEDLY**: The philosophy MUST stress multiple times that the final work should appear as though it took countless hours to create, was labored over with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like "meticulously crafted," "the product of deep expertise," "painstaking attention," "master-level execution."
-- **Leave creative space**: Remain specific about the aesthetic direction, but concise enough that the next Claude has room to make interpretive choices also at a extremely high level of craftmanship.
+**關鍵指導原則：**
+- **避免冗餘**：每個設計面向只應提及一次。避免重複色彩理論、空間關係或排版原則的要點，除非增加新的深度。
+- **反覆強調工藝精神**：哲學必須多次強調最終作品應呈現出彷彿花費了無數小時創作、經過精心打磨、來自該領域頂尖人士的效果。這種框架至關重要——反覆使用「精心製作」、「深厚專業的產物」、「一絲不苟的專注」、「大師級執行」等詞彙。
+- **保留創作空間**：保持對美學方向的具體性，但足夠簡潔，讓下一個 Claude 有空間做出同樣高水準工藝的詮釋選擇。
 
-The philosophy must guide the next version to express ideas VISUALLY, not through text. Information lives in design, not paragraphs.
+哲學必須引導下一個版本以視覺方式表達想法，而非透過文字。資訊存在於設計中，而非段落中。
 
-### PHILOSOPHY EXAMPLES
+### 哲學範例
 
-**"Concrete Poetry"**
-Philosophy: Communication through monumental form and bold geometry.
-Visual expression: Massive color blocks, sculptural typography (huge single words, tiny labels), Brutalist spatial divisions, Polish poster energy meets Le Corbusier. Ideas expressed through visual weight and spatial tension, not explanation. Text as rare, powerful gesture - never paragraphs, only essential words integrated into the visual architecture. Every element placed with the precision of a master craftsman.
+**「混凝土詩歌」**
+哲學：透過紀念碑式的形式和大膽的幾何圖形進行溝通。
+視覺表達：大面積色塊、雕塑般的排版（巨大的單字、微小的標籤）、粗獷主義的空間劃分、波蘭海報的能量與柯比意的結合。想法透過視覺重量和空間張力表達，而非解釋。文字罕見而有力——永遠不是段落，只有融入視覺建築的必要詞彙。每個元素的放置都有大師工匠的精準。
 
-**"Chromatic Language"**
-Philosophy: Color as the primary information system.
-Visual expression: Geometric precision where color zones create meaning. Typography minimal - small sans-serif labels letting chromatic fields communicate. Think Josef Albers' interaction meets data visualization. Information encoded spatially and chromatically. Words only to anchor what color already shows. The result of painstaking chromatic calibration.
+**「色彩語言」**
+哲學：色彩作為主要資訊系統。
+視覺表達：幾何精準，色彩區域創造意義。排版極簡——小型無襯線標籤讓色彩場域進行溝通。想像約瑟夫·亞伯斯的互動與資料視覺化的結合。資訊以空間和色彩編碼。文字僅用於錨定色彩已展示的內容。一絲不苟的色彩校準成果。
 
-**"Analog Meditation"**
-Philosophy: Quiet visual contemplation through texture and breathing room.
-Visual expression: Paper grain, ink bleeds, vast negative space. Photography and illustration dominate. Typography whispered (small, restrained, serving the visual). Japanese photobook aesthetic. Images breathe across pages. Text appears sparingly - short phrases, never explanatory blocks. Each composition balanced with the care of a meditation practice.
+**「類比冥想」**
+哲學：透過質感和呼吸空間進行安靜的視覺沉思。
+視覺表達：紙張紋理、墨水暈染、廣闘的負空間。攝影和插畫主導。排版低語（小巧、克制、服務於視覺）。日式攝影書美學。圖像在頁面間呼吸。文字稀疏出現——簡短詞組，從不是解釋性段落。每個構圖都以冥想練習般的用心進行平衡。
 
-**"Organic Systems"**
-Philosophy: Natural clustering and modular growth patterns.
-Visual expression: Rounded forms, organic arrangements, color from nature through architecture. Information shown through visual diagrams, spatial relationships, iconography. Text only for key labels floating in space. The composition tells the story through expert spatial orchestration.
+**「有機系統」**
+哲學：自然聚集和模組化生長模式。
+視覺表達：圓潤形式、有機排列、透過建築呈現自然色彩。資訊透過視覺圖表、空間關係、圖標呈現。文字僅用於漂浮在空間中的關鍵標籤。構圖透過專業的空間編排講述故事。
 
-**"Geometric Silence"**
-Philosophy: Pure order and restraint.
-Visual expression: Grid-based precision, bold photography or stark graphics, dramatic negative space. Typography precise but minimal - small essential text, large quiet zones. Swiss formalism meets Brutalist material honesty. Structure communicates, not words. Every alignment the work of countless refinements.
+**「幾何沉默」**
+哲學：純粹的秩序與克制。
+視覺表達：基於網格的精準、大膽的攝影或鮮明的圖形、戲劇性的負空間。排版精準但極簡——小巧的必要文字、大片安靜區域。瑞士形式主義與粗獷主義材料誠實的結合。結構進行溝通，而非文字。每一處對齊都是無數次修煉的成果。
 
-*These are condensed examples. The actual design philosophy should be 4-6 substantial paragraphs.*
+*這些是濃縮的範例。實際的設計哲學應為 4-6 個充實的段落。*
 
-### ESSENTIAL PRINCIPLES
-- **VISUAL PHILOSOPHY**: Create an aesthetic worldview to be expressed through design
-- **MINIMAL TEXT**: Always emphasize that text is sparse, essential-only, integrated as visual element - never lengthy
-- **SPATIAL EXPRESSION**: Ideas communicate through space, form, color, composition - not paragraphs
-- **ARTISTIC FREEDOM**: The next Claude interprets the philosophy visually - provide creative room
-- **PURE DESIGN**: This is about making ART OBJECTS, not documents with decoration
-- **EXPERT CRAFTSMANSHIP**: Repeatedly emphasize the final work must look meticulously crafted, labored over with care, the product of countless hours by someone at the top of their field
+### 核心原則
+- **視覺哲學**：創建透過設計表達的美學世界觀
+- **極少文字**：始終強調文字稀疏、僅保留必要內容、作為視覺元素整合——從不冗長
+- **空間表達**：想法透過空間、形式、色彩、構圖溝通——而非段落
+- **藝術自由**：下一個 Claude 以視覺方式詮釋哲學——提供創作空間
+- **純粹設計**：這是關於製作藝術品，而非帶裝飾的文件
+- **專家工藝**：反覆強調最終作品必須看起來精心製作、用心打磨、彷彿頂尖專家花費無數小時的產物
 
-**The design philosophy should be 4-6 paragraphs long.** Fill it with poetic design philosophy that brings together the core vision. Avoid repeating the same points. Keep the design philosophy generic without mentioning the intention of the art, as if it can be used wherever. Output the design philosophy as a .md file.
-
----
-
-## DEDUCING THE SUBTLE REFERENCE
-
-**CRITICAL STEP**: Before creating the canvas, identify the subtle conceptual thread from the original request.
-
-**THE ESSENTIAL PRINCIPLE**:
-The topic is a **subtle, niche reference embedded within the art itself** - not always literal, always sophisticated. Someone familiar with the subject should feel it intuitively, while others simply experience a masterful abstract composition. The design philosophy provides the aesthetic language. The deduced topic provides the soul - the quiet conceptual DNA woven invisibly into form, color, and composition.
-
-This is **VERY IMPORTANT**: The reference must be refined so it enhances the work's depth without announcing itself. Think like a jazz musician quoting another song - only those who know will catch it, but everyone appreciates the music.
+**設計哲學應為 4-6 段落。** 用詩意的設計哲學填充，將核心願景整合在一起。避免重複相同的要點。保持設計哲學的通用性，不提及藝術的具體意圖，彷彿可以用在任何地方。將設計哲學輸出為 .md 檔案。
 
 ---
 
-## CANVAS CREATION
+## 推導微妙參照
 
-With both the philosophy and the conceptual framework established, express it on a canvas. Take a moment to gather thoughts and clear the mind. Use the design philosophy created and the instructions below to craft a masterpiece, embodying all aspects of the philosophy with expert craftsmanship.
+**關鍵步驟**：在創建畫布之前，識別原始請求中的微妙概念線索。
 
-**IMPORTANT**: For any type of content, even if the user requests something for a movie/game/book, the approach should still be sophisticated. Never lose sight of the idea that this should be art, not something that's cartoony or amateur.
+**核心原則**：
+主題是**嵌入藝術本身的微妙、小眾參照**——不總是直白的，始終是精緻的。熟悉該主題的人應能直覺地感受到，而其他人則純粹欣賞一件大師級的抽象作品。設計哲學提供美學語言。推導出的主題提供靈魂——悄然編織在形式、色彩和構圖中的隱形概念 DNA。
 
-To create museum or magazine quality work, use the design philosophy as the foundation. Create one single page, highly visual, design-forward PDF or PNG output (unless asked for more pages). Generally use repeating patterns and perfect shapes. Treat the abstract philosophical design as if it were a scientific bible, borrowing the visual language of systematic observation—dense accumulation of marks, repeated elements, or layered patterns that build meaning through patient repetition and reward sustained viewing. Add sparse, clinical typography and systematic reference markers that suggest this could be a diagram from an imaginary discipline, treating the invisible subject with the same reverence typically reserved for documenting observable phenomena. Anchor the piece with simple phrase(s) or details positioned subtly, using a limited color palette that feels intentional and cohesive. Embrace the paradox of using analytical visual language to express ideas about human experience: the result should feel like an artifact that proves something ephemeral can be studied, mapped, and understood through careful attention. This is true art. 
-
-**Text as a contextual element**: Text is always minimal and visual-first, but let context guide whether that means whisper-quiet labels or bold typographic gestures. A punk venue poster might have larger, more aggressive type than a minimalist ceramics studio identity. Most of the time, font should be thin. All use of fonts must be design-forward and prioritize visual communication. Regardless of text scale, nothing falls off the page and nothing overlaps. Every element must be contained within the canvas boundaries with proper margins. Check carefully that all text, graphics, and visual elements have breathing room and clear separation. This is non-negotiable for professional execution. **IMPORTANT: Use different fonts if writing text. Search the `./canvas-fonts` directory. Regardless of approach, sophistication is non-negotiable.**
-
-Download and use whatever fonts are needed to make this a reality. Get creative by making the typography actually part of the art itself -- if the art is abstract, bring the font onto the canvas, not typeset digitally.
-
-To push boundaries, follow design instinct/intuition while using the philosophy as a guiding principle. Embrace ultimate design freedom and choice. Push aesthetics and design to the frontier. 
-
-**CRITICAL**: To achieve human-crafted quality (not AI-generated), create work that looks like it took countless hours. Make it appear as though someone at the absolute top of their field labored over every detail with painstaking care. Ensure the composition, spacing, color choices, typography - everything screams expert-level craftsmanship. Double-check that nothing overlaps, formatting is flawless, every detail perfect. Create something that could be shown to people to prove expertise and rank as undeniably impressive.
-
-Output the final result as a single, downloadable .pdf or .png file, alongside the design philosophy used as a .md file.
+這**非常重要**：參照必須經過提煉，使其增強作品的深度而不宣示自己。想像爵士樂手引用另一首歌——只有知道的人才能捕捉到，但每個人都欣賞這音樂。
 
 ---
 
-## FINAL STEP
+## 畫布創建
 
-**IMPORTANT**: The user ALREADY said "It isn't perfect enough. It must be pristine, a masterpiece if craftsmanship, as if it were about to be displayed in a museum."
+在哲學和概念框架都確立後，在畫布上表達它。花一點時間整理思緒、清空心靈。使用創建的設計哲學和以下指示來打造傑作，以專家工藝體現哲學的所有面向。
 
-**CRITICAL**: To refine the work, avoid adding more graphics; instead refine what has been created and make it extremely crisp, respecting the design philosophy and the principles of minimalism entirely. Rather than adding a fun filter or refactoring a font, consider how to make the existing composition more cohesive with the art. If the instinct is to call a new function or draw a new shape, STOP and instead ask: "How can I make what's already here more of a piece of art?"
+**重要**：對於任何類型的內容，即使使用者請求的是電影/遊戲/書籍相關內容，方法仍應保持精緻。永遠不要忘記這應該是藝術，而非卡通或業餘的東西。
 
-Take a second pass. Go back to the code and refine/polish further to make this a philosophically designed masterpiece.
+為創作博物館或雜誌品質的作品，以設計哲學為基礎。創建一個單頁、高度視覺化、設計優先的 PDF 或 PNG 輸出（除非被要求更多頁面）。通常使用重複圖案和完美形狀。將抽象的哲學設計視為科學聖經，借用系統觀察的視覺語言——密集堆積的標記、重複元素或分層圖案，透過耐心的重複建構意義，並獎勵持續的觀看。添加稀疏、臨床的排版和系統性參照標記，暗示這可能是一個想像學科的圖表，以通常保留給記錄可觀察現象的崇敬對待隱形主題。用簡單的詞組或細節微妙地錨定作品，使用感覺刻意且連貫的有限色彩調色盤。擁抱使用分析性視覺語言表達人類經驗想法的悖論：結果應感覺像是一件證明短暫事物可以透過仔細關注被研究、繪製和理解的文物。這是真正的藝術。
 
-## MULTI-PAGE OPTION
+**文字作為情境元素**：文字始終是極簡且視覺優先的，但讓情境引導這意味著低語般的標籤還是大膽的排版姿態。龐克場地海報可能比極簡陶瓷工作室標識有更大、更激進的字體。大多數時候，字體應該纖細。所有字體使用必須是設計優先的，優先考慮視覺溝通。無論文字比例如何，沒有任何東西超出頁面，沒有任何東西重疊。每個元素必須在畫布邊界內，有適當的邊距。仔細檢查所有文字、圖形和視覺元素有呼吸空間和清晰的分隔。這對專業執行是不可協商的。**重要：若書寫文字，請使用不同字體。搜尋 `./canvas-fonts` 目錄。無論採用何種方法，精緻是不可協商的。**
 
-To create additional pages when requested, create more creative pages along the same lines as the design philosophy but distinctly different as well. Bundle those pages in the same .pdf or many .pngs. Treat the first page as just a single page in a whole coffee table book waiting to be filled. Make the next pages unique twists and memories of the original. Have them almost tell a story in a very tasteful way. Exercise full creative freedom.
+下載並使用任何需要的字體來實現這一願景。發揮創意，讓排版真正成為藝術的一部分——如果藝術是抽象的，將字體帶到畫布上，而非數位排版。
+
+為突破邊界，遵循設計直覺/靈感，同時以哲學為指導原則。擁抱終極設計自由和選擇。將美學和設計推向前沿。
+
+**關鍵**：為達到人工製作的品質（非 AI 生成），創建看起來花費了無數小時的作品。讓它看起來彷彿該領域頂尖人士對每個細節都進行了一絲不苟的打磨。確保構圖、間距、色彩選擇、排版——一切都展現專家級工藝。仔細檢查沒有任何東西重疊，格式完美無瑕，每個細節都完美。創建可以展示給人們證明專業水準、無可否認令人印象深刻的作品。
+
+將最終結果輸出為單一、可下載的 .pdf 或 .png 檔案，連同使用的設計哲學作為 .md 檔案。
+
+---
+
+## 最後步驟
+
+**重要**：使用者已經說過「這還不夠完美。它必須是原始的、工藝的傑作，彷彿即將在博物館展出。」
+
+**關鍵**：為精煉作品，避免添加更多圖形；而是精煉已創建的內容，使其極度清晰，完全尊重設計哲學和極簡主義原則。與其添加有趣的濾鏡或重構字體，不如考慮如何讓現有構圖與藝術更加融合。如果直覺是調用新函數或繪製新形狀，停下來問自己：「如何讓已有的東西更像一件藝術品？」
+
+進行第二次修煉。回到程式碼，進一步精煉/打磨，使其成為一件哲學設計的傑作。
+
+## 多頁選項
+
+當被要求創建額外頁面時，沿著設計哲學的相同路線創建更多創意頁面，但也要明顯不同。將這些頁面捆綁在同一個 .pdf 或多個 .png 中。將第一頁視為等待填滿的整本咖啡桌書籍中的單頁。讓後續頁面成為原作的獨特變奏和回憶。讓它們以非常優雅的方式幾乎講述一個故事。充分發揮創作自由。

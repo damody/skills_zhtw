@@ -1,356 +1,353 @@
 ---
-name: skill-creator
-description: Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.
-license: Complete terms in LICENSE.txt
+name: 技能創建器
+description: 創建有效技能的指南。當使用者想要創建新技能（或更新現有技能）以擴展 Claude 的專業知識、工作流程或工具整合功能時，應使用此技能。
+license: 完整條款請見 LICENSE.txt
 ---
 
-# Skill Creator
+# 技能創建器
 
-This skill provides guidance for creating effective skills.
+此技能提供創建有效技能的指導。
 
-## About Skills
+## 關於技能
 
-Skills are modular, self-contained packages that extend Claude's capabilities by providing
-specialized knowledge, workflows, and tools. Think of them as "onboarding guides" for specific
-domains or tasks—they transform Claude from a general-purpose agent into a specialized agent
-equipped with procedural knowledge that no model can fully possess.
+技能是模組化、自包含的套件，透過提供專業知識、工作流程和工具來擴展 Claude 的功能。將它們視為特定領域或任務的「入職指南」——它們將 Claude 從通用代理轉變為配備程序性知識的專業代理，這些知識是任何模型都無法完全具備的。
 
-### What Skills Provide
+### 技能提供什麼
 
-1. Specialized workflows - Multi-step procedures for specific domains
-2. Tool integrations - Instructions for working with specific file formats or APIs
-3. Domain expertise - Company-specific knowledge, schemas, business logic
-4. Bundled resources - Scripts, references, and assets for complex and repetitive tasks
+1. 專業工作流程 - 特定領域的多步驟程序
+2. 工具整合 - 處理特定檔案格式或 API 的說明
+3. 領域專業知識 - 公司特定知識、架構、業務邏輯
+4. 捆綁資源 - 用於複雜和重複任務的腳本、參考資料和資產
 
-## Core Principles
+## 核心原則
 
-### Concise is Key
+### 簡潔是關鍵
 
-The context window is a public good. Skills share the context window with everything else Claude needs: system prompt, conversation history, other Skills' metadata, and the actual user request.
+上下文視窗是公共財產。技能與 Claude 需要的其他一切共享上下文視窗：系統提示、對話歷史、其他技能的中繼資料，以及實際使用者請求。
 
-**Default assumption: Claude is already very smart.** Only add context Claude doesn't already have. Challenge each piece of information: "Does Claude really need this explanation?" and "Does this paragraph justify its token cost?"
+**預設假設：Claude 已經非常聰明。** 只添加 Claude 還不知道的上下文。挑戰每一條資訊：「Claude 真的需要這個解釋嗎？」以及「這個段落是否值得其 token 成本？」
 
-Prefer concise examples over verbose explanations.
+偏好簡潔的範例而非冗長的解釋。
 
-### Set Appropriate Degrees of Freedom
+### 設定適當的自由度
 
-Match the level of specificity to the task's fragility and variability:
+將具體程度與任務的脆弱性和變異性匹配：
 
-**High freedom (text-based instructions)**: Use when multiple approaches are valid, decisions depend on context, or heuristics guide the approach.
+**高自由度（基於文字的說明）**：當多種方法都有效、決策取決於上下文，或啟發式方法引導方法時使用。
 
-**Medium freedom (pseudocode or scripts with parameters)**: Use when a preferred pattern exists, some variation is acceptable, or configuration affects behavior.
+**中等自由度（偽程式碼或帶參數的腳本）**：當存在偏好模式、某些變異可接受，或配置影響行為時使用。
 
-**Low freedom (specific scripts, few parameters)**: Use when operations are fragile and error-prone, consistency is critical, or a specific sequence must be followed.
+**低自由度（特定腳本、少量參數）**：當操作脆弱且容易出錯、一致性至關重要，或必須遵循特定順序時使用。
 
-Think of Claude as exploring a path: a narrow bridge with cliffs needs specific guardrails (low freedom), while an open field allows many routes (high freedom).
+將 Claude 想像為探索一條路徑：有懸崖的窄橋需要特定護欄（低自由度），而開闘的田野允許許多路線（高自由度）。
 
-### Anatomy of a Skill
+### 技能的結構
 
-Every skill consists of a required SKILL.md file and optional bundled resources:
+每個技能由必需的 SKILL.md 檔案和可選的捆綁資源組成：
 
 ```
 skill-name/
-├── SKILL.md (required)
-│   ├── YAML frontmatter metadata (required)
-│   │   ├── name: (required)
-│   │   └── description: (required)
-│   └── Markdown instructions (required)
-└── Bundled Resources (optional)
-    ├── scripts/          - Executable code (Python/Bash/etc.)
-    ├── references/       - Documentation intended to be loaded into context as needed
-    └── assets/           - Files used in output (templates, icons, fonts, etc.)
+├── SKILL.md（必需）
+│   ├── YAML frontmatter 中繼資料（必需）
+│   │   ├── name:（必需）
+│   │   └── description:（必需）
+│   └── Markdown 說明（必需）
+└── 捆綁資源（可選）
+    ├── scripts/          - 可執行程式碼（Python/Bash 等）
+    ├── references/       - 旨在根據需要載入上下文的文件
+    └── assets/           - 用於輸出的檔案（模板、圖示、字體等）
 ```
 
-#### SKILL.md (required)
+#### SKILL.md（必需）
 
-Every SKILL.md consists of:
+每個 SKILL.md 包含：
 
-- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
-- **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).
+- **Frontmatter**（YAML）：包含 `name` 和 `description` 欄位。這些是 Claude 讀取以確定何時使用技能的唯一欄位，因此在描述技能是什麼以及何時應使用時，清晰和全面非常重要。
+- **正文**（Markdown）：使用技能的說明和指導。僅在技能觸發後（如果有）載入。
 
-#### Bundled Resources (optional)
+#### 捆綁資源（可選）
 
-##### Scripts (`scripts/`)
+##### 腳本（`scripts/`）
 
-Executable code (Python/Bash/etc.) for tasks that require deterministic reliability or are repeatedly rewritten.
+用於需要確定性可靠性或重複重寫任務的可執行程式碼（Python/Bash 等）。
 
-- **When to include**: When the same code is being rewritten repeatedly or deterministic reliability is needed
-- **Example**: `scripts/rotate_pdf.py` for PDF rotation tasks
-- **Benefits**: Token efficient, deterministic, may be executed without loading into context
-- **Note**: Scripts may still need to be read by Claude for patching or environment-specific adjustments
+- **何時包含**：當相同程式碼被重複重寫或需要確定性可靠性時
+- **範例**：用於 PDF 旋轉任務的 `scripts/rotate_pdf.py`
+- **優點**：節省 token、確定性、可在不載入上下文的情況下執行
+- **注意**：腳本可能仍需要 Claude 讀取以進行修補或環境特定調整
 
-##### References (`references/`)
+##### 參考資料（`references/`）
 
-Documentation and reference material intended to be loaded as needed into context to inform Claude's process and thinking.
+旨在根據需要載入上下文以告知 Claude 的過程和思考的文件和參考資料。
 
-- **When to include**: For documentation that Claude should reference while working
-- **Examples**: `references/finance.md` for financial schemas, `references/mnda.md` for company NDA template, `references/policies.md` for company policies, `references/api_docs.md` for API specifications
-- **Use cases**: Database schemas, API documentation, domain knowledge, company policies, detailed workflow guides
-- **Benefits**: Keeps SKILL.md lean, loaded only when Claude determines it's needed
-- **Best practice**: If files are large (>10k words), include grep search patterns in SKILL.md
-- **Avoid duplication**: Information should live in either SKILL.md or references files, not both. Prefer references files for detailed information unless it's truly core to the skill—this keeps SKILL.md lean while making information discoverable without hogging the context window. Keep only essential procedural instructions and workflow guidance in SKILL.md; move detailed reference material, schemas, and examples to references files.
+- **何時包含**：用於 Claude 在工作時應參考的文件
+- **範例**：用於財務架構的 `references/finance.md`、用於公司 NDA 模板的 `references/mnda.md`、用於公司政策的 `references/policies.md`、用於 API 規格的 `references/api_docs.md`
+- **使用案例**：資料庫架構、API 文件、領域知識、公司政策、詳細工作流程指南
+- **優點**：保持 SKILL.md 精簡，僅在 Claude 確定需要時載入
+- **最佳實踐**：如果檔案很大（>10k 字），在 SKILL.md 中包含 grep 搜尋模式
+- **避免重複**：資訊應存在於 SKILL.md 或參考檔案中，而非兩者。除非真正是技能的核心，否則偏好參考檔案存放詳細資訊——這保持 SKILL.md 精簡，同時使資訊可發現而不佔用上下文視窗。只在 SKILL.md 中保留基本的程序說明和工作流程指導；將詳細的參考資料、架構和範例移至參考檔案。
 
-##### Assets (`assets/`)
+##### 資產（`assets/`）
 
-Files not intended to be loaded into context, but rather used within the output Claude produces.
+不打算載入上下文，而是用於 Claude 產生的輸出中的檔案。
 
-- **When to include**: When the skill needs files that will be used in the final output
-- **Examples**: `assets/logo.png` for brand assets, `assets/slides.pptx` for PowerPoint templates, `assets/frontend-template/` for HTML/React boilerplate, `assets/font.ttf` for typography
-- **Use cases**: Templates, images, icons, boilerplate code, fonts, sample documents that get copied or modified
-- **Benefits**: Separates output resources from documentation, enables Claude to use files without loading them into context
+- **何時包含**：當技能需要將用於最終輸出的檔案時
+- **範例**：用於品牌資產的 `assets/logo.png`、用於 PowerPoint 模板的 `assets/slides.pptx`、用於 HTML/React 樣板的 `assets/frontend-template/`、用於排版的 `assets/font.ttf`
+- **使用案例**：模板、圖片、圖示、樣板程式碼、字體、被複製或修改的範例文件
+- **優點**：將輸出資源與文件分開，使 Claude 能夠使用檔案而無需將其載入上下文
 
-#### What to Not Include in a Skill
+#### 技能中不應包含什麼
 
-A skill should only contain essential files that directly support its functionality. Do NOT create extraneous documentation or auxiliary files, including:
+技能應僅包含直接支援其功能的基本檔案。不要創建無關的文件或輔助檔案，包括：
 
 - README.md
 - INSTALLATION_GUIDE.md
 - QUICK_REFERENCE.md
 - CHANGELOG.md
-- etc.
+- 等
 
-The skill should only contain the information needed for an AI agent to do the job at hand. It should not contain auxilary context about the process that went into creating it, setup and testing procedures, user-facing documentation, etc. Creating additional documentation files just adds clutter and confusion.
+技能應僅包含 AI 代理執行手頭工作所需的資訊。它不應包含關於創建過程、設置和測試程序、面向使用者的文件等輔助上下文。創建額外的文件檔案只會增加混亂和困惑。
 
-### Progressive Disclosure Design Principle
+### 漸進式揭露設計原則
 
-Skills use a three-level loading system to manage context efficiently:
+技能使用三層載入系統有效管理上下文：
 
-1. **Metadata (name + description)** - Always in context (~100 words)
-2. **SKILL.md body** - When skill triggers (<5k words)
-3. **Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)
+1. **中繼資料（名稱 + 描述）** - 始終在上下文中（約 100 字）
+2. **SKILL.md 正文** - 當技能觸發時（<5k 字）
+3. **捆綁資源** - 根據 Claude 的需要（無限制，因為腳本可以在不讀入上下文視窗的情況下執行）
 
-#### Progressive Disclosure Patterns
+#### 漸進式揭露模式
 
-Keep SKILL.md body to the essentials and under 500 lines to minimize context bloat. Split content into separate files when approaching this limit. When splitting out content into other files, it is very important to reference them from SKILL.md and describe clearly when to read them, to ensure the reader of the skill knows they exist and when to use them.
+將 SKILL.md 正文保持在基本要素內且少於 500 行以最小化上下文膨脹。接近此限制時將內容分割到單獨檔案中。將內容分割到其他檔案時，從 SKILL.md 中引用它們並清楚描述何時讀取它們非常重要，以確保技能讀者知道它們存在以及何時使用它們。
 
-**Key principle:** When a skill supports multiple variations, frameworks, or options, keep only the core workflow and selection guidance in SKILL.md. Move variant-specific details (patterns, examples, configuration) into separate reference files.
+**關鍵原則：** 當技能支援多種變體、框架或選項時，只在 SKILL.md 中保留核心工作流程和選擇指導。將變體特定的詳細資訊（模式、範例、配置）移至單獨的參考檔案。
 
-**Pattern 1: High-level guide with references**
+**模式 1：帶參考資料的高階指南**
 
 ```markdown
-# PDF Processing
+# PDF 處理
 
-## Quick start
+## 快速開始
 
-Extract text with pdfplumber:
-[code example]
+使用 pdfplumber 擷取文字：
+[程式碼範例]
 
-## Advanced features
+## 進階功能
 
-- **Form filling**: See [FORMS.md](FORMS.md) for complete guide
-- **API reference**: See [REFERENCE.md](REFERENCE.md) for all methods
-- **Examples**: See [EXAMPLES.md](EXAMPLES.md) for common patterns
+- **表單填寫**：參見 [FORMS.md](FORMS.md) 獲取完整指南
+- **API 參考**：參見 [REFERENCE.md](REFERENCE.md) 獲取所有方法
+- **範例**：參見 [EXAMPLES.md](EXAMPLES.md) 獲取常見模式
 ```
 
-Claude loads FORMS.md, REFERENCE.md, or EXAMPLES.md only when needed.
+Claude 僅在需要時載入 FORMS.md、REFERENCE.md 或 EXAMPLES.md。
 
-**Pattern 2: Domain-specific organization**
+**模式 2：領域特定組織**
 
-For Skills with multiple domains, organize content by domain to avoid loading irrelevant context:
+對於具有多個領域的技能，按領域組織內容以避免載入不相關的上下文：
 
 ```
 bigquery-skill/
-├── SKILL.md (overview and navigation)
+├── SKILL.md（概述和導覽）
 └── reference/
-    ├── finance.md (revenue, billing metrics)
-    ├── sales.md (opportunities, pipeline)
-    ├── product.md (API usage, features)
-    └── marketing.md (campaigns, attribution)
+    ├── finance.md（收入、計費指標）
+    ├── sales.md（機會、管道）
+    ├── product.md（API 使用、功能）
+    └── marketing.md（活動、歸因）
 ```
 
-When a user asks about sales metrics, Claude only reads sales.md.
+當使用者詢問銷售指標時，Claude 只讀取 sales.md。
 
-Similarly, for skills supporting multiple frameworks or variants, organize by variant:
+同樣，對於支援多種框架或變體的技能，按變體組織：
 
 ```
 cloud-deploy/
-├── SKILL.md (workflow + provider selection)
+├── SKILL.md（工作流程 + 提供者選擇）
 └── references/
-    ├── aws.md (AWS deployment patterns)
-    ├── gcp.md (GCP deployment patterns)
-    └── azure.md (Azure deployment patterns)
+    ├── aws.md（AWS 部署模式）
+    ├── gcp.md（GCP 部署模式）
+    └── azure.md（Azure 部署模式）
 ```
 
-When the user chooses AWS, Claude only reads aws.md.
+當使用者選擇 AWS 時，Claude 只讀取 aws.md。
 
-**Pattern 3: Conditional details**
+**模式 3：條件詳細資訊**
 
-Show basic content, link to advanced content:
+顯示基本內容，連結到進階內容：
 
 ```markdown
-# DOCX Processing
+# DOCX 處理
 
-## Creating documents
+## 創建文件
 
-Use docx-js for new documents. See [DOCX-JS.md](DOCX-JS.md).
+使用 docx-js 創建新文件。參見 [DOCX-JS.md](DOCX-JS.md)。
 
-## Editing documents
+## 編輯文件
 
-For simple edits, modify the XML directly.
+對於簡單編輯，直接修改 XML。
 
-**For tracked changes**: See [REDLINING.md](REDLINING.md)
-**For OOXML details**: See [OOXML.md](OOXML.md)
+**追蹤修訂**：參見 [REDLINING.md](REDLINING.md)
+**OOXML 詳細資訊**：參見 [OOXML.md](OOXML.md)
 ```
 
-Claude reads REDLINING.md or OOXML.md only when the user needs those features.
+Claude 僅在使用者需要這些功能時讀取 REDLINING.md 或 OOXML.md。
 
-**Important guidelines:**
+**重要指南：**
 
-- **Avoid deeply nested references** - Keep references one level deep from SKILL.md. All reference files should link directly from SKILL.md.
-- **Structure longer reference files** - For files longer than 100 lines, include a table of contents at the top so Claude can see the full scope when previewing.
+- **避免深層嵌套引用** - 從 SKILL.md 保持引用一層深。所有參考檔案應直接從 SKILL.md 連結。
+- **結構化較長的參考檔案** - 對於超過 100 行的檔案，在頂部包含目錄，以便 Claude 在預覽時可以看到完整範圍。
 
-## Skill Creation Process
+## 技能創建過程
 
-Skill creation involves these steps:
+技能創建涉及這些步驟：
 
-1. Understand the skill with concrete examples
-2. Plan reusable skill contents (scripts, references, assets)
-3. Initialize the skill (run init_skill.py)
-4. Edit the skill (implement resources and write SKILL.md)
-5. Package the skill (run package_skill.py)
-6. Iterate based on real usage
+1. 透過具體範例理解技能
+2. 規劃可重用的技能內容（腳本、參考資料、資產）
+3. 初始化技能（執行 init_skill.py）
+4. 編輯技能（實作資源並撰寫 SKILL.md）
+5. 打包技能（執行 package_skill.py）
+6. 根據實際使用迭代
 
-Follow these steps in order, skipping only if there is a clear reason why they are not applicable.
+按順序遵循這些步驟，僅在有明確理由說明它們不適用時才跳過。
 
-### Step 1: Understanding the Skill with Concrete Examples
+### 步驟 1：透過具體範例理解技能
 
-Skip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.
+僅當技能的使用模式已清楚理解時才跳過此步驟。即使使用現有技能時，此步驟仍有價值。
 
-To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
+為創建有效的技能，清楚理解技能將如何使用的具體範例。這種理解可以來自直接的使用者範例或經過使用者回饋驗證的生成範例。
 
-For example, when building an image-editor skill, relevant questions include:
+例如，在建構圖片編輯技能時，相關問題包括：
 
-- "What functionality should the image-editor skill support? Editing, rotating, anything else?"
-- "Can you give some examples of how this skill would be used?"
-- "I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?"
-- "What would a user say that should trigger this skill?"
+- 「圖片編輯技能應該支援什麼功能？編輯、旋轉，還有其他嗎？」
+- 「你能舉一些如何使用此技能的例子嗎？」
+- 「我可以想像使用者會要求『從這張圖片移除紅眼』或『旋轉這張圖片』。還有其他你想像此技能會被使用的方式嗎？」
+- 「使用者會說什麼來觸發此技能？」
 
-To avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.
+為避免使使用者不知所措，避免在單一訊息中問太多問題。從最重要的問題開始，根據需要跟進以獲得更好的效果。
 
-Conclude this step when there is a clear sense of the functionality the skill should support.
+當對技能應支援的功能有清晰的認識時，結束此步驟。
 
-### Step 2: Planning the Reusable Skill Contents
+### 步驟 2：規劃可重用的技能內容
 
-To turn concrete examples into an effective skill, analyze each example by:
+為將具體範例轉化為有效技能，透過以下方式分析每個範例：
 
-1. Considering how to execute on the example from scratch
-2. Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly
+1. 考慮如何從頭執行範例
+2. 識別在重複執行這些工作流程時什麼腳本、參考資料和資產會有幫助
 
-Example: When building a `pdf-editor` skill to handle queries like "Help me rotate this PDF," the analysis shows:
+範例：在建構 `pdf-editor` 技能以處理「幫我旋轉這個 PDF」等查詢時，分析顯示：
 
-1. Rotating a PDF requires re-writing the same code each time
-2. A `scripts/rotate_pdf.py` script would be helpful to store in the skill
+1. 旋轉 PDF 每次都需要重寫相同的程式碼
+2. 在技能中儲存 `scripts/rotate_pdf.py` 腳本會有幫助
 
-Example: When designing a `frontend-webapp-builder` skill for queries like "Build me a todo app" or "Build me a dashboard to track my steps," the analysis shows:
+範例：在設計 `frontend-webapp-builder` 技能以處理「幫我建構一個待辦事項應用程式」或「幫我建構一個追蹤步數的儀表板」等查詢時，分析顯示：
 
-1. Writing a frontend webapp requires the same boilerplate HTML/React each time
-2. An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill
+1. 撰寫前端 webapp 每次都需要相同的 HTML/React 樣板
+2. 在技能中儲存包含樣板 HTML/React 專案檔案的 `assets/hello-world/` 模板會有幫助
 
-Example: When building a `big-query` skill to handle queries like "How many users have logged in today?" the analysis shows:
+範例：在建構 `big-query` 技能以處理「今天有多少使用者登入？」等查詢時，分析顯示：
 
-1. Querying BigQuery requires re-discovering the table schemas and relationships each time
-2. A `references/schema.md` file documenting the table schemas would be helpful to store in the skill
+1. 查詢 BigQuery 每次都需要重新發現表架構和關係
+2. 在技能中儲存記錄表架構的 `references/schema.md` 檔案會有幫助
 
-To establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.
+為建立技能的內容，分析每個具體範例以創建要包含的可重用資源列表：腳本、參考資料和資產。
 
-### Step 3: Initializing the Skill
+### 步驟 3：初始化技能
 
-At this point, it is time to actually create the skill.
+此時，是時候實際創建技能了。
 
-Skip this step only if the skill being developed already exists, and iteration or packaging is needed. In this case, continue to the next step.
+僅當正在開發的技能已存在且需要迭代或打包時才跳過此步驟。在這種情況下，繼續下一步。
 
-When creating a new skill from scratch, always run the `init_skill.py` script. The script conveniently generates a new template skill directory that automatically includes everything a skill requires, making the skill creation process much more efficient and reliable.
+從頭創建新技能時，始終執行 `init_skill.py` 腳本。該腳本方便地生成一個新的模板技能目錄，自動包含技能所需的一切，使技能創建過程更高效和可靠。
 
-Usage:
+用法：
 
 ```bash
 scripts/init_skill.py <skill-name> --path <output-directory>
 ```
 
-The script:
+腳本：
 
-- Creates the skill directory at the specified path
-- Generates a SKILL.md template with proper frontmatter and TODO placeholders
-- Creates example resource directories: `scripts/`, `references/`, and `assets/`
-- Adds example files in each directory that can be customized or deleted
+- 在指定路徑創建技能目錄
+- 生成帶有正確 frontmatter 和 TODO 佔位符的 SKILL.md 模板
+- 創建範例資源目錄：`scripts/`、`references/` 和 `assets/`
+- 在每個目錄中添加可以自定義或刪除的範例檔案
 
-After initialization, customize or remove the generated SKILL.md and example files as needed.
+初始化後，根據需要自定義或移除生成的 SKILL.md 和範例檔案。
 
-### Step 4: Edit the Skill
+### 步驟 4：編輯技能
 
-When editing the (newly-generated or existing) skill, remember that the skill is being created for another instance of Claude to use. Include information that would be beneficial and non-obvious to Claude. Consider what procedural knowledge, domain-specific details, or reusable assets would help another Claude instance execute these tasks more effectively.
+編輯（新生成或現有的）技能時，記住技能是為另一個 Claude 實例使用而創建的。包含對 Claude 有益且不明顯的資訊。考慮什麼程序性知識、領域特定詳細資訊或可重用資產能幫助另一個 Claude 實例更有效地執行這些任務。
 
-#### Learn Proven Design Patterns
+#### 學習經過驗證的設計模式
 
-Consult these helpful guides based on your skill's needs:
+根據技能需求諮詢這些有用的指南：
 
-- **Multi-step processes**: See references/workflows.md for sequential workflows and conditional logic
-- **Specific output formats or quality standards**: See references/output-patterns.md for template and example patterns
+- **多步驟過程**：參見 references/workflows.md 了解順序工作流程和條件邏輯
+- **特定輸出格式或品質標準**：參見 references/output-patterns.md 了解模板和範例模式
 
-These files contain established best practices for effective skill design.
+這些檔案包含有效技能設計的既定最佳實踐。
 
-#### Start with Reusable Skill Contents
+#### 從可重用的技能內容開始
 
-To begin implementation, start with the reusable resources identified above: `scripts/`, `references/`, and `assets/` files. Note that this step may require user input. For example, when implementing a `brand-guidelines` skill, the user may need to provide brand assets or templates to store in `assets/`, or documentation to store in `references/`.
+開始實作時，從上面識別的可重用資源開始：`scripts/`、`references/` 和 `assets/` 檔案。注意此步驟可能需要使用者輸入。例如，在實作 `brand-guidelines` 技能時，使用者可能需要提供要儲存在 `assets/` 中的品牌資產或模板，或要儲存在 `references/` 中的文件。
 
-Added scripts must be tested by actually running them to ensure there are no bugs and that the output matches what is expected. If there are many similar scripts, only a representative sample needs to be tested to ensure confidence that they all work while balancing time to completion.
+添加的腳本必須透過實際執行來測試，以確保沒有錯誤且輸出符合預期。如果有許多類似的腳本，只需要測試代表性樣本以確保它們都能正常工作，同時平衡完成時間。
 
-Any example files and directories not needed for the skill should be deleted. The initialization script creates example files in `scripts/`, `references/`, and `assets/` to demonstrate structure, but most skills won't need all of them.
+任何技能不需要的範例檔案和目錄都應刪除。初始化腳本在 `scripts/`、`references/` 和 `assets/` 中創建範例檔案以示範結構，但大多數技能不需要所有這些。
 
-#### Update SKILL.md
+#### 更新 SKILL.md
 
-**Writing Guidelines:** Always use imperative/infinitive form.
+**撰寫指南：** 始終使用命令式/不定式形式。
 
 ##### Frontmatter
 
-Write the YAML frontmatter with `name` and `description`:
+撰寫帶有 `name` 和 `description` 的 YAML frontmatter：
 
-- `name`: The skill name
-- `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.
-  - Include both what the Skill does and specific triggers/contexts for when to use it.
-  - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
-  - Example description for a `docx` skill: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
+- `name`：技能名稱
+- `description`：這是技能的主要觸發機制，幫助 Claude 理解何時使用技能。
+  - 包含技能做什麼以及何時使用的特定觸發/上下文。
+  - 在此處包含所有「何時使用」資訊——不在正文中。正文僅在觸發後載入，所以正文中的「何時使用此技能」章節對 Claude 沒有幫助。
+  - `docx` 技能的範例描述：「全面的文件創建、編輯和分析，支援追蹤修訂、註解、格式保留和文字擷取。當 Claude 需要處理專業文件（.docx 檔案）時使用：(1) 創建新文件、(2) 修改或編輯內容、(3) 處理追蹤修訂、(4) 添加註解，或任何其他文件任務」
 
-Do not include any other fields in YAML frontmatter.
+不要在 YAML frontmatter 中包含任何其他欄位。
 
-##### Body
+##### 正文
 
-Write instructions for using the skill and its bundled resources.
+撰寫使用技能及其捆綁資源的說明。
 
-### Step 5: Packaging a Skill
+### 步驟 5：打包技能
 
-Once development of the skill is complete, it must be packaged into a distributable .skill file that gets shared with the user. The packaging process automatically validates the skill first to ensure it meets all requirements:
+技能開發完成後，必須將其打包成可分發的 .skill 檔案與使用者共享。打包過程會自動先驗證技能以確保它滿足所有需求：
 
 ```bash
 scripts/package_skill.py <path/to/skill-folder>
 ```
 
-Optional output directory specification:
+可選的輸出目錄指定：
 
 ```bash
 scripts/package_skill.py <path/to/skill-folder> ./dist
 ```
 
-The packaging script will:
+打包腳本將：
 
-1. **Validate** the skill automatically, checking:
+1. **驗證**技能，自動檢查：
 
-   - YAML frontmatter format and required fields
-   - Skill naming conventions and directory structure
-   - Description completeness and quality
-   - File organization and resource references
+   - YAML frontmatter 格式和必需欄位
+   - 技能命名慣例和目錄結構
+   - 描述完整性和品質
+   - 檔案組織和資源引用
 
-2. **Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension.
+2. **打包**技能（如果驗證通過），創建以技能命名的 .skill 檔案（例如 `my-skill.skill`），包含所有檔案並維持正確的目錄結構以便分發。.skill 檔案是帶有 .skill 副檔名的 zip 檔案。
 
-If validation fails, the script will report the errors and exit without creating a package. Fix any validation errors and run the packaging command again.
+如果驗證失敗，腳本將報告錯誤並退出而不創建套件。修復任何驗證錯誤並再次執行打包命令。
 
-### Step 6: Iterate
+### 步驟 6：迭代
 
-After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
+測試技能後，使用者可能會請求改進。這通常發生在使用技能之後，對技能表現有新鮮的上下文。
 
-**Iteration workflow:**
+**迭代工作流程：**
 
-1. Use the skill on real tasks
-2. Notice struggles or inefficiencies
-3. Identify how SKILL.md or bundled resources should be updated
-4. Implement changes and test again
+1. 在實際任務上使用技能
+2. 注意困難或低效之處
+3. 識別應如何更新 SKILL.md 或捆綁資源
+4. 實施更改並再次測試

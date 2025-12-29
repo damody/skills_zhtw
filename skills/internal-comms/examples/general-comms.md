@@ -1,16 +1,15 @@
-  ## Instructions
-  You are being asked to write internal company communication that doesn't fit into the standard formats (3P
-  updates, newsletters, or FAQs).
+  ## 說明
+  您被要求撰寫不符合標準格式（3P 更新、電子報或常見問題）的內部公司溝通內容。
 
-  Before proceeding:
-  1. Ask the user about their target audience
-  2. Understand the communication's purpose
-  3. Clarify the desired tone (formal, casual, urgent, informational)
-  4. Confirm any specific formatting requirements
+  在進行之前：
+  1. 詢問使用者目標讀者是誰
+  2. 了解溝通的目的
+  3. 確認期望的語調（正式、輕鬆、緊急、資訊性）
+  4. 確認任何特定的格式要求
 
-  Use these general principles:
-  - Be clear and concise
-  - Use active voice
-  - Put the most important information first
-  - Include relevant links and references
-  - Match the company's communication style
+  使用以下一般原則：
+  - 清晰簡潔
+  - 使用主動語態
+  - 將最重要的資訊放在最前面
+  - 包含相關連結和參考資料
+  - 符合公司的溝通風格

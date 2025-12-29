@@ -1,84 +1,84 @@
-# Office Open XML Technical Reference
+# Office Open XML 技術參考
 
-**Important: Read this entire document before starting.** This document covers:
-- [Technical Guidelines](#technical-guidelines) - Schema compliance rules and validation requirements
-- [Document Content Patterns](#document-content-patterns) - XML patterns for headings, lists, tables, formatting, etc.
-- [Document Library (Python)](#document-library-python) - Recommended approach for OOXML manipulation with automatic infrastructure setup
-- [Tracked Changes (Redlining)](#tracked-changes-redlining) - XML patterns for implementing tracked changes
+**重要：開始之前請閱讀整份文件。** 本文件涵蓋：
+- [技術指南](#技術指南) - Schema 合規規則和驗證需求
+- [文件內容模式](#文件內容模式) - 標題、清單、表格、格式等的 XML 模式
+- [Document 函式庫（Python）](#document-函式庫python) - 建議用於 OOXML 操作的方法，具備自動基礎設定功能
+- [追蹤修訂（紅線標記）](#追蹤修訂紅線標記) - 實作追蹤修訂的 XML 模式
 
-## Technical Guidelines
+## 技術指南
 
-### Schema Compliance
-- **Element ordering in `<w:pPr>`**: `<w:pStyle>`, `<w:numPr>`, `<w:spacing>`, `<w:ind>`, `<w:jc>`
-- **Whitespace**: Add `xml:space='preserve'` to `<w:t>` elements with leading/trailing spaces
-- **Unicode**: Escape characters in ASCII content: `"` becomes `&#8220;`
-  - **Character encoding reference**: Curly quotes `""` become `&#8220;&#8221;`, apostrophe `'` becomes `&#8217;`, em-dash `—` becomes `&#8212;`
-- **Tracked changes**: Use `<w:del>` and `<w:ins>` tags with `w:author="Claude"` outside `<w:r>` elements
-  - **Critical**: `<w:ins>` closes with `</w:ins>`, `<w:del>` closes with `</w:del>` - never mix
-  - **RSIDs must be 8-digit hex**: Use values like `00AB1234` (only 0-9, A-F characters)
-  - **trackRevisions placement**: Add `<w:trackRevisions/>` after `<w:proofState>` in settings.xml
-- **Images**: Add to `word/media/`, reference in `document.xml`, set dimensions to prevent overflow
+### Schema 合規性
+- **`<w:pPr>` 中的元素順序**：`<w:pStyle>`、`<w:numPr>`、`<w:spacing>`、`<w:ind>`、`<w:jc>`
+- **空白字元**：在有前導或尾隨空格的 `<w:t>` 元素上加入 `xml:space='preserve'`
+- **Unicode**：在 ASCII 內容中跳脫字元：`"` 變成 `&#8220;`
+  - **字元編碼參考**：彎引號 `""` 變成 `&#8220;&#8221;`，撇號 `'` 變成 `&#8217;`，破折號 `—` 變成 `&#8212;`
+- **追蹤修訂**：使用 `<w:del>` 和 `<w:ins>` 標籤，在 `<w:r>` 元素外部加上 `w:author="Claude"`
+  - **關鍵**：`<w:ins>` 以 `</w:ins>` 結束，`<w:del>` 以 `</w:del>` 結束 - 永遠不要混用
+  - **RSID 必須是 8 位十六進位**：使用像 `00AB1234` 這樣的值（只能使用 0-9、A-F 字元）
+  - **trackRevisions 位置**：在 settings.xml 中 `<w:proofState>` 之後加入 `<w:trackRevisions/>`
+- **圖片**：加入到 `word/media/`，在 document.xml 中參照，設定尺寸以防止溢出
 
-## Document Content Patterns
+## 文件內容模式
 
-### Basic Structure
+### 基本結構
 ```xml
 <w:p>
-  <w:r><w:t>Text content</w:t></w:r>
+  <w:r><w:t>文字內容</w:t></w:r>
 </w:p>
 ```
 
-### Headings and Styles
+### 標題和樣式
 ```xml
 <w:p>
   <w:pPr>
     <w:pStyle w:val="Title"/>
     <w:jc w:val="center"/>
   </w:pPr>
-  <w:r><w:t>Document Title</w:t></w:r>
+  <w:r><w:t>文件標題</w:t></w:r>
 </w:p>
 
 <w:p>
   <w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
-  <w:r><w:t>Section Heading</w:t></w:r>
+  <w:r><w:t>章節標題</w:t></w:r>
 </w:p>
 ```
 
-### Text Formatting
+### 文字格式
 ```xml
-<!-- Bold -->
-<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>Bold</w:t></w:r>
-<!-- Italic -->
-<w:r><w:rPr><w:i/><w:iCs/></w:rPr><w:t>Italic</w:t></w:r>
-<!-- Underline -->
-<w:r><w:rPr><w:u w:val="single"/></w:rPr><w:t>Underlined</w:t></w:r>
-<!-- Highlight -->
-<w:r><w:rPr><w:highlight w:val="yellow"/></w:rPr><w:t>Highlighted</w:t></w:r>
+<!-- 粗體 -->
+<w:r><w:rPr><w:b/><w:bCs/></w:rPr><w:t>粗體</w:t></w:r>
+<!-- 斜體 -->
+<w:r><w:rPr><w:i/><w:iCs/></w:rPr><w:t>斜體</w:t></w:r>
+<!-- 底線 -->
+<w:r><w:rPr><w:u w:val="single"/></w:rPr><w:t>底線</w:t></w:r>
+<!-- 螢光標記 -->
+<w:r><w:rPr><w:highlight w:val="yellow"/></w:rPr><w:t>螢光標記</w:t></w:r>
 ```
 
-### Lists
+### 清單
 ```xml
-<!-- Numbered list -->
+<!-- 編號清單 -->
 <w:p>
   <w:pPr>
     <w:pStyle w:val="ListParagraph"/>
     <w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>
     <w:spacing w:before="240"/>
   </w:pPr>
-  <w:r><w:t>First item</w:t></w:r>
+  <w:r><w:t>第一項</w:t></w:r>
 </w:p>
 
-<!-- Restart numbered list at 1 - use different numId -->
+<!-- 重新從 1 開始編號清單 - 使用不同的 numId -->
 <w:p>
   <w:pPr>
     <w:pStyle w:val="ListParagraph"/>
     <w:numPr><w:ilvl w:val="0"/><w:numId w:val="2"/></w:numPr>
     <w:spacing w:before="240"/>
   </w:pPr>
-  <w:r><w:t>New list item 1</w:t></w:r>
+  <w:r><w:t>新清單項目 1</w:t></w:r>
 </w:p>
 
-<!-- Bullet list (level 2) -->
+<!-- 項目符號清單（第 2 層） -->
 <w:p>
   <w:pPr>
     <w:pStyle w:val="ListParagraph"/>
@@ -86,11 +86,11 @@
     <w:spacing w:before="240"/>
     <w:ind w:left="900"/>
   </w:pPr>
-  <w:r><w:t>Bullet item</w:t></w:r>
+  <w:r><w:t>項目符號項目</w:t></w:r>
 </w:p>
 ```
 
-### Tables
+### 表格
 ```xml
 <w:tbl>
   <w:tblPr>
@@ -103,19 +103,19 @@
   <w:tr>
     <w:tc>
       <w:tcPr><w:tcW w:w="4675" w:type="dxa"/></w:tcPr>
-      <w:p><w:r><w:t>Cell 1</w:t></w:r></w:p>
+      <w:p><w:r><w:t>儲存格 1</w:t></w:r></w:p>
     </w:tc>
     <w:tc>
       <w:tcPr><w:tcW w:w="4675" w:type="dxa"/></w:tcPr>
-      <w:p><w:r><w:t>Cell 2</w:t></w:r></w:p>
+      <w:p><w:r><w:t>儲存格 2</w:t></w:r></w:p>
     </w:tc>
   </w:tr>
 </w:tbl>
 ```
 
-### Layout
+### 版面配置
 ```xml
-<!-- Page break before new section (common pattern) -->
+<!-- 新章節前分頁（常見模式） -->
 <w:p>
   <w:r>
     <w:br w:type="page"/>
@@ -126,58 +126,58 @@
     <w:pStyle w:val="Heading1"/>
   </w:pPr>
   <w:r>
-    <w:t>New Section Title</w:t>
+    <w:t>新章節標題</w:t>
   </w:r>
 </w:p>
 
-<!-- Centered paragraph -->
+<!-- 置中段落 -->
 <w:p>
   <w:pPr>
     <w:spacing w:before="240" w:after="0"/>
     <w:jc w:val="center"/>
   </w:pPr>
-  <w:r><w:t>Centered text</w:t></w:r>
+  <w:r><w:t>置中文字</w:t></w:r>
 </w:p>
 
-<!-- Font change - paragraph level (applies to all runs) -->
+<!-- 字型變更 - 段落層級（套用到所有 run） -->
 <w:p>
   <w:pPr>
     <w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/></w:rPr>
   </w:pPr>
-  <w:r><w:t>Monospace text</w:t></w:r>
+  <w:r><w:t>等寬字體文字</w:t></w:r>
 </w:p>
 
-<!-- Font change - run level (specific to this text) -->
+<!-- 字型變更 - run 層級（只套用到此文字） -->
 <w:p>
   <w:r>
     <w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/></w:rPr>
-    <w:t>This text is Courier New</w:t>
+    <w:t>這是 Courier New 字型</w:t>
   </w:r>
-  <w:r><w:t> and this text uses default font</w:t></w:r>
+  <w:r><w:t> 而這是預設字型</w:t></w:r>
 </w:p>
 ```
 
-## File Updates
+## 檔案更新
 
-When adding content, update these files:
+新增內容時，更新這些檔案：
 
-**`word/_rels/document.xml.rels`:**
+**`word/_rels/document.xml.rels`：**
 ```xml
 <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>
 <Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/>
 ```
 
-**`[Content_Types].xml`:**
+**`[Content_Types].xml`：**
 ```xml
 <Default Extension="png" ContentType="image/png"/>
 <Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/>
 ```
 
-### Images
-**CRITICAL**: Calculate dimensions to prevent page overflow and maintain aspect ratio.
+### 圖片
+**關鍵**：計算尺寸以防止頁面溢出並維持長寬比。
 
 ```xml
-<!-- Minimal required structure -->
+<!-- 最小必要結構 -->
 <w:p>
   <w:r>
     <w:drawing>
@@ -193,7 +193,7 @@ When adding content, update these files:
               </pic:nvPicPr>
               <pic:blipFill>
                 <a:blip r:embed="rId5"/>
-                <!-- Add for stretch fill with aspect ratio preservation -->
+                <!-- 加入以拉伸填充並保留長寬比 -->
                 <a:stretch>
                   <a:fillRect/>
                 </a:stretch>
@@ -213,43 +213,43 @@ When adding content, update these files:
 </w:p>
 ```
 
-### Links (Hyperlinks)
+### 連結（超連結）
 
-**IMPORTANT**: All hyperlinks (both internal and external) require the Hyperlink style to be defined in styles.xml. Without this style, links will look like regular text instead of blue underlined clickable links.
+**重要**：所有超連結（內部和外部）都需要在 styles.xml 中定義 Hyperlink 樣式。沒有此樣式，連結會看起來像一般文字而不是藍色底線的可點擊連結。
 
-**External Links:**
+**外部連結：**
 ```xml
-<!-- In document.xml -->
+<!-- 在 document.xml 中 -->
 <w:hyperlink r:id="rId5">
   <w:r>
     <w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr>
-    <w:t>Link Text</w:t>
+    <w:t>連結文字</w:t>
   </w:r>
 </w:hyperlink>
 
-<!-- In word/_rels/document.xml.rels -->
-<Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" 
+<!-- 在 word/_rels/document.xml.rels 中 -->
+<Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
               Target="https://www.example.com/" TargetMode="External"/>
 ```
 
-**Internal Links:**
+**內部連結：**
 
 ```xml
-<!-- Link to bookmark -->
+<!-- 連結到書籤 -->
 <w:hyperlink w:anchor="myBookmark">
   <w:r>
     <w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr>
-    <w:t>Link Text</w:t>
+    <w:t>連結文字</w:t>
   </w:r>
 </w:hyperlink>
 
-<!-- Bookmark target -->
+<!-- 書籤目標 -->
 <w:bookmarkStart w:id="0" w:name="myBookmark"/>
-<w:r><w:t>Target content</w:t></w:r>
+<w:r><w:t>目標內容</w:t></w:r>
 <w:bookmarkEnd w:id="0"/>
 ```
 
-**Hyperlink Style (required in styles.xml):**
+**Hyperlink 樣式（在 styles.xml 中必要）：**
 ```xml
 <w:style w:type="character" w:styleId="Hyperlink">
   <w:name w:val="Hyperlink"/>
@@ -263,89 +263,89 @@ When adding content, update these files:
 </w:style>
 ```
 
-## Document Library (Python)
+## Document 函式庫（Python）
 
-Use the Document class from `scripts/document.py` for all tracked changes and comments. It automatically handles infrastructure setup (people.xml, RSIDs, settings.xml, comment files, relationships, content types). Only use direct XML manipulation for complex scenarios not supported by the library.
+使用 `scripts/document.py` 中的 Document 類別處理所有追蹤修訂和註解。它會自動處理基礎設定（people.xml、RSID、settings.xml、註解檔案、關聯、內容類型）。只有在函式庫不支援的複雜情況下才使用直接 XML 操作。
 
-**Working with Unicode and Entities:**
-- **Searching**: Both entity notation and Unicode characters work - `contains="&#8220;Company"` and `contains="\u201cCompany"` find the same text
-- **Replacing**: Use either entities (`&#8220;`) or Unicode (`\u201c`) - both work and will be converted appropriately based on the file's encoding (ascii → entities, utf-8 → Unicode)
+**使用 Unicode 和實體：**
+- **搜尋**：實體表示法和 Unicode 字元都可用 - `contains="&#8220;Company"` 和 `contains="\u201cCompany"` 會找到相同的文字
+- **替換**：使用實體（`&#8220;`）或 Unicode（`\u201c`）都可以 - 兩者都會根據檔案的編碼適當轉換（ascii → 實體，utf-8 → Unicode）
 
-### Initialization
+### 初始化
 
-**Find the docx skill root** (directory containing `scripts/` and `ooxml/`):
+**找到 docx skill 根目錄**（包含 `scripts/` 和 `ooxml/` 的目錄）：
 ```bash
-# Search for document.py to locate the skill root
-# Note: /mnt/skills is used here as an example; check your context for the actual location
+# 搜尋 document.py 以找到 skill 根目錄
+# 注意：這裡使用 /mnt/skills 作為範例；請檢查您的環境以找到實際位置
 find /mnt/skills -name "document.py" -path "*/docx/scripts/*" 2>/dev/null | head -1
-# Example output: /mnt/skills/docx/scripts/document.py
-# Skill root is: /mnt/skills/docx
+# 範例輸出：/mnt/skills/docx/scripts/document.py
+# Skill 根目錄是：/mnt/skills/docx
 ```
 
-**Run your script with PYTHONPATH** set to the docx skill root:
+**使用 PYTHONPATH 設定為 docx skill 根目錄執行您的腳本：**
 ```bash
 PYTHONPATH=/mnt/skills/docx python your_script.py
 ```
 
-**In your script**, import from the skill root:
+**在您的腳本中**，從 skill 根目錄匯入：
 ```python
 from scripts.document import Document, DocxXMLEditor
 
-# Basic initialization (automatically creates temp copy and sets up infrastructure)
+# 基本初始化（自動建立臨時副本並設定基礎設施）
 doc = Document('unpacked')
 
-# Customize author and initials
+# 自訂作者和縮寫
 doc = Document('unpacked', author="John Doe", initials="JD")
 
-# Enable track revisions mode
+# 啟用追蹤修訂模式
 doc = Document('unpacked', track_revisions=True)
 
-# Specify custom RSID (auto-generated if not provided)
+# 指定自訂 RSID（如未提供會自動生成）
 doc = Document('unpacked', rsid="07DC5ECB")
 ```
 
-### Creating Tracked Changes
+### 建立追蹤修訂
 
-**CRITICAL**: Only mark text that actually changes. Keep ALL unchanged text outside `<w:del>`/`<w:ins>` tags. Marking unchanged text makes edits unprofessional and harder to review.
+**關鍵**：只標記實際變更的文字。將所有未變更的文字保持在 `<w:del>`/`<w:ins>` 標籤之外。標記未變更的文字會使編輯看起來不專業且更難審閱。
 
-**Attribute Handling**: The Document class auto-injects attributes (w:id, w:date, w:rsidR, w:rsidDel, w16du:dateUtc, xml:space) into new elements. When preserving unchanged text from the original document, copy the original `<w:r>` element with its existing attributes to maintain document integrity.
+**屬性處理**：Document 類別會自動將屬性（w:id、w:date、w:rsidR、w:rsidDel、w16du:dateUtc、xml:space）注入到新元素中。當保留原始文件中未變更的文字時，複製原始 `<w:r>` 元素及其現有屬性以維持文件完整性。
 
-**Method Selection Guide**:
-- **Adding your own changes to regular text**: Use `replace_node()` with `<w:del>`/`<w:ins>` tags, or `suggest_deletion()` for removing entire `<w:r>` or `<w:p>` elements
-- **Partially modifying another author's tracked change**: Use `replace_node()` to nest your changes inside their `<w:ins>`/`<w:del>`
-- **Completely rejecting another author's insertion**: Use `revert_insertion()` on the `<w:ins>` element (NOT `suggest_deletion()`)
-- **Completely rejecting another author's deletion**: Use `revert_deletion()` on the `<w:del>` element to restore deleted content using tracked changes
+**方法選擇指南**：
+- **為一般文字加入您自己的修改**：使用 `replace_node()` 搭配 `<w:del>`/`<w:ins>` 標籤，或使用 `suggest_deletion()` 刪除整個 `<w:r>` 或 `<w:p>` 元素
+- **部分修改其他作者的追蹤修訂**：使用 `replace_node()` 將您的修改嵌套在他們的 `<w:ins>`/`<w:del>` 內
+- **完全拒絕其他作者的插入**：在 `<w:ins>` 元素上使用 `revert_insertion()`（不是 `suggest_deletion()`）
+- **完全拒絕其他作者的刪除**：在 `<w:del>` 元素上使用 `revert_deletion()` 以使用追蹤修訂還原刪除的內容
 
 ```python
-# Minimal edit - change one word: "The report is monthly" → "The report is quarterly"
-# Original: <w:r w:rsidR="00AB12CD"><w:rPr><w:rFonts w:ascii="Calibri"/></w:rPr><w:t>The report is monthly</w:t></w:r>
+# 最小編輯 - 變更一個單字："The report is monthly" → "The report is quarterly"
+# 原始：<w:r w:rsidR="00AB12CD"><w:rPr><w:rFonts w:ascii="Calibri"/></w:rPr><w:t>The report is monthly</w:t></w:r>
 node = doc["word/document.xml"].get_node(tag="w:r", contains="The report is monthly")
 rpr = tags[0].toxml() if (tags := node.getElementsByTagName("w:rPr")) else ""
 replacement = f'<w:r w:rsidR="00AB12CD">{rpr}<w:t>The report is </w:t></w:r><w:del><w:r>{rpr}<w:delText>monthly</w:delText></w:r></w:del><w:ins><w:r>{rpr}<w:t>quarterly</w:t></w:r></w:ins>'
 doc["word/document.xml"].replace_node(node, replacement)
 
-# Minimal edit - change number: "within 30 days" → "within 45 days"
-# Original: <w:r w:rsidR="00XYZ789"><w:rPr><w:rFonts w:ascii="Calibri"/></w:rPr><w:t>within 30 days</w:t></w:r>
+# 最小編輯 - 變更數字："within 30 days" → "within 45 days"
+# 原始：<w:r w:rsidR="00XYZ789"><w:rPr><w:rFonts w:ascii="Calibri"/></w:rPr><w:t>within 30 days</w:t></w:r>
 node = doc["word/document.xml"].get_node(tag="w:r", contains="within 30 days")
 rpr = tags[0].toxml() if (tags := node.getElementsByTagName("w:rPr")) else ""
 replacement = f'<w:r w:rsidR="00XYZ789">{rpr}<w:t>within </w:t></w:r><w:del><w:r>{rpr}<w:delText>30</w:delText></w:r></w:del><w:ins><w:r>{rpr}<w:t>45</w:t></w:r></w:ins><w:r w:rsidR="00XYZ789">{rpr}<w:t> days</w:t></w:r>'
 doc["word/document.xml"].replace_node(node, replacement)
 
-# Complete replacement - preserve formatting even when replacing all text
+# 完整替換 - 即使替換所有文字也要保留格式
 node = doc["word/document.xml"].get_node(tag="w:r", contains="apple")
 rpr = tags[0].toxml() if (tags := node.getElementsByTagName("w:rPr")) else ""
 replacement = f'<w:del><w:r>{rpr}<w:delText>apple</w:delText></w:r></w:del><w:ins><w:r>{rpr}<w:t>banana orange</w:t></w:r></w:ins>'
 doc["word/document.xml"].replace_node(node, replacement)
 
-# Insert new content (no attributes needed - auto-injected)
+# 插入新內容（不需要屬性 - 會自動注入）
 node = doc["word/document.xml"].get_node(tag="w:r", contains="existing text")
 doc["word/document.xml"].insert_after(node, '<w:ins><w:r><w:t>new text</w:t></w:r></w:ins>')
 
-# Partially delete another author's insertion
-# Original: <w:ins w:author="Jane Smith" w:date="..."><w:r><w:t>quarterly financial report</w:t></w:r></w:ins>
-# Goal: Delete only "financial" to make it "quarterly report"
+# 部分刪除其他作者的插入
+# 原始：<w:ins w:author="Jane Smith" w:date="..."><w:r><w:t>quarterly financial report</w:t></w:r></w:ins>
+# 目標：只刪除 "financial" 變成 "quarterly report"
 node = doc["word/document.xml"].get_node(tag="w:ins", attrs={"w:id": "5"})
-# IMPORTANT: Preserve w:author="Jane Smith" on the outer <w:ins> to maintain authorship
+# 重要：保留外部 <w:ins> 的 w:author="Jane Smith" 以維持作者身份
 replacement = '''<w:ins w:author="Jane Smith" w:date="2025-01-15T10:00:00Z">
   <w:r><w:t>quarterly </w:t></w:r>
   <w:del><w:r><w:delText>financial </w:delText></w:r></w:del>
@@ -353,9 +353,9 @@ replacement = '''<w:ins w:author="Jane Smith" w:date="2025-01-15T10:00:00Z">
 </w:ins>'''
 doc["word/document.xml"].replace_node(node, replacement)
 
-# Change part of another author's insertion
-# Original: <w:ins w:author="Jane Smith"><w:r><w:t>in silence, safe and sound</w:t></w:r></w:ins>
-# Goal: Change "safe and sound" to "soft and unbound"
+# 變更其他作者插入的部分內容
+# 原始：<w:ins w:author="Jane Smith"><w:r><w:t>in silence, safe and sound</w:t></w:r></w:ins>
+# 目標：將 "safe and sound" 變更為 "soft and unbound"
 node = doc["word/document.xml"].get_node(tag="w:ins", attrs={"w:id": "8"})
 replacement = f'''<w:ins w:author="Jane Smith" w:date="2025-01-15T10:00:00Z">
   <w:r><w:t>in silence, </w:t></w:r>
@@ -368,97 +368,97 @@ replacement = f'''<w:ins w:author="Jane Smith" w:date="2025-01-15T10:00:00Z">
 </w:ins>'''
 doc["word/document.xml"].replace_node(node, replacement)
 
-# Delete entire run (use only when deleting all content; use replace_node for partial deletions)
+# 刪除整個 run（只有在刪除所有內容時使用；部分刪除使用 replace_node）
 node = doc["word/document.xml"].get_node(tag="w:r", contains="text to delete")
 doc["word/document.xml"].suggest_deletion(node)
 
-# Delete entire paragraph (in-place, handles both regular and numbered list paragraphs)
+# 刪除整個段落（就地處理，處理一般和編號清單段落）
 para = doc["word/document.xml"].get_node(tag="w:p", contains="paragraph to delete")
 doc["word/document.xml"].suggest_deletion(para)
 
-# Add new numbered list item
+# 新增編號清單項目
 target_para = doc["word/document.xml"].get_node(tag="w:p", contains="existing list item")
 pPr = tags[0].toxml() if (tags := target_para.getElementsByTagName("w:pPr")) else ""
 new_item = f'<w:p>{pPr}<w:r><w:t>New item</w:t></w:r></w:p>'
 tracked_para = DocxXMLEditor.suggest_paragraph(new_item)
 doc["word/document.xml"].insert_after(target_para, tracked_para)
-# Optional: add spacing paragraph before content for better visual separation
+# 可選：在內容前加入間距段落以獲得更好的視覺分隔
 # spacing = DocxXMLEditor.suggest_paragraph('<w:p><w:pPr><w:pStyle w:val="ListParagraph"/></w:pPr></w:p>')
 # doc["word/document.xml"].insert_after(target_para, spacing + tracked_para)
 ```
 
-### Adding Comments
+### 新增註解
 
 ```python
-# Add comment spanning two existing tracked changes
-# Note: w:id is auto-generated. Only search by w:id if you know it from XML inspection
+# 新增跨越兩個現有追蹤修訂的註解
+# 注意：w:id 是自動生成的。只有在您從 XML 檢查中知道 w:id 時才使用它搜尋
 start_node = doc["word/document.xml"].get_node(tag="w:del", attrs={"w:id": "1"})
 end_node = doc["word/document.xml"].get_node(tag="w:ins", attrs={"w:id": "2"})
-doc.add_comment(start=start_node, end=end_node, text="Explanation of this change")
+doc.add_comment(start=start_node, end=end_node, text="此變更的說明")
 
-# Add comment on a paragraph
+# 在段落上新增註解
 para = doc["word/document.xml"].get_node(tag="w:p", contains="paragraph text")
-doc.add_comment(start=para, end=para, text="Comment on this paragraph")
+doc.add_comment(start=para, end=para, text="此段落的註解")
 
-# Add comment on newly created tracked change
-# First create the tracked change
+# 在新建立的追蹤修訂上新增註解
+# 首先建立追蹤修訂
 node = doc["word/document.xml"].get_node(tag="w:r", contains="old")
 new_nodes = doc["word/document.xml"].replace_node(
     node,
     '<w:del><w:r><w:delText>old</w:delText></w:r></w:del><w:ins><w:r><w:t>new</w:t></w:r></w:ins>'
 )
-# Then add comment on the newly created elements
-# new_nodes[0] is the <w:del>, new_nodes[1] is the <w:ins>
-doc.add_comment(start=new_nodes[0], end=new_nodes[1], text="Changed old to new per requirements")
+# 然後在新建立的元素上新增註解
+# new_nodes[0] 是 <w:del>，new_nodes[1] 是 <w:ins>
+doc.add_comment(start=new_nodes[0], end=new_nodes[1], text="根據需求將 old 變更為 new")
 
-# Reply to existing comment
-doc.reply_to_comment(parent_comment_id=0, text="I agree with this change")
+# 回覆現有註解
+doc.reply_to_comment(parent_comment_id=0, text="我同意此變更")
 ```
 
-### Rejecting Tracked Changes
+### 拒絕追蹤修訂
 
-**IMPORTANT**: Use `revert_insertion()` to reject insertions and `revert_deletion()` to restore deletions using tracked changes. Use `suggest_deletion()` only for regular unmarked content.
+**重要**：使用 `revert_insertion()` 拒絕插入，使用 `revert_deletion()` 使用追蹤修訂還原刪除。只對一般未標記的內容使用 `suggest_deletion()`。
 
 ```python
-# Reject insertion (wraps it in deletion)
-# Use this when another author inserted text that you want to delete
+# 拒絕插入（用刪除包裝它）
+# 當其他作者插入了您想刪除的文字時使用此方法
 ins = doc["word/document.xml"].get_node(tag="w:ins", attrs={"w:id": "5"})
-nodes = doc["word/document.xml"].revert_insertion(ins)  # Returns [ins]
+nodes = doc["word/document.xml"].revert_insertion(ins)  # 傳回 [ins]
 
-# Reject deletion (creates insertion to restore deleted content)
-# Use this when another author deleted text that you want to restore
+# 拒絕刪除（建立插入以還原刪除的內容）
+# 當其他作者刪除了您想還原的文字時使用此方法
 del_elem = doc["word/document.xml"].get_node(tag="w:del", attrs={"w:id": "3"})
-nodes = doc["word/document.xml"].revert_deletion(del_elem)  # Returns [del_elem, new_ins]
+nodes = doc["word/document.xml"].revert_deletion(del_elem)  # 傳回 [del_elem, new_ins]
 
-# Reject all insertions in a paragraph
+# 拒絕段落中的所有插入
 para = doc["word/document.xml"].get_node(tag="w:p", contains="paragraph text")
-nodes = doc["word/document.xml"].revert_insertion(para)  # Returns [para]
+nodes = doc["word/document.xml"].revert_insertion(para)  # 傳回 [para]
 
-# Reject all deletions in a paragraph
+# 拒絕段落中的所有刪除
 para = doc["word/document.xml"].get_node(tag="w:p", contains="paragraph text")
-nodes = doc["word/document.xml"].revert_deletion(para)  # Returns [para]
+nodes = doc["word/document.xml"].revert_deletion(para)  # 傳回 [para]
 ```
 
-### Inserting Images
+### 插入圖片
 
-**CRITICAL**: The Document class works with a temporary copy at `doc.unpacked_path`. Always copy images to this temp directory, not the original unpacked folder.
+**關鍵**：Document 類別使用位於 `doc.unpacked_path` 的臨時副本。永遠將圖片複製到此臨時目錄，而不是原始解壓縮資料夾。
 
 ```python
 from PIL import Image
 import shutil, os
 
-# Initialize document first
+# 首先初始化文件
 doc = Document('unpacked')
 
-# Copy image and calculate full-width dimensions with aspect ratio
+# 複製圖片並計算全寬尺寸並保持長寬比
 media_dir = os.path.join(doc.unpacked_path, 'word/media')
 os.makedirs(media_dir, exist_ok=True)
 shutil.copy('image.png', os.path.join(media_dir, 'image1.png'))
 img = Image.open(os.path.join(media_dir, 'image1.png'))
-width_emus = int(6.5 * 914400)  # 6.5" usable width, 914400 EMUs/inch
+width_emus = int(6.5 * 914400)  # 6.5" 可用寬度，914400 EMU/英吋
 height_emus = int(width_emus * img.size[1] / img.size[0])
 
-# Add relationship and content type
+# 新增關聯和內容類型
 rels_editor = doc['word/_rels/document.xml.rels']
 next_rid = rels_editor.get_next_rid()
 rels_editor.append_to(rels_editor.dom.documentElement,
@@ -466,7 +466,7 @@ rels_editor.append_to(rels_editor.dom.documentElement,
 doc['[Content_Types].xml'].append_to(doc['[Content_Types].xml'].dom.documentElement,
     '<Default Extension="png" ContentType="image/png"/>')
 
-# Insert image
+# 插入圖片
 node = doc["word/document.xml"].get_node(tag="w:p", line_number=100)
 doc["word/document.xml"].insert_after(node, f'''<w:p>
   <w:r>
@@ -489,85 +489,85 @@ doc["word/document.xml"].insert_after(node, f'''<w:p>
 </w:p>''')
 ```
 
-### Getting Nodes
+### 取得節點
 
 ```python
-# By text content
+# 依文字內容
 node = doc["word/document.xml"].get_node(tag="w:p", contains="specific text")
 
-# By line range
+# 依行範圍
 para = doc["word/document.xml"].get_node(tag="w:p", line_number=range(100, 150))
 
-# By attributes
+# 依屬性
 node = doc["word/document.xml"].get_node(tag="w:del", attrs={"w:id": "1"})
 
-# By exact line number (must be line number where tag opens)
+# 依精確行號（必須是標籤開啟的行號）
 para = doc["word/document.xml"].get_node(tag="w:p", line_number=42)
 
-# Combine filters
+# 組合過濾器
 node = doc["word/document.xml"].get_node(tag="w:r", line_number=range(40, 60), contains="text")
 
-# Disambiguate when text appears multiple times - add line_number range
+# 當文字出現多次時消歧 - 加入行號範圍
 node = doc["word/document.xml"].get_node(tag="w:r", contains="Section", line_number=range(2400, 2500))
 ```
 
-### Saving
+### 儲存
 
 ```python
-# Save with automatic validation (copies back to original directory)
-doc.save()  # Validates by default, raises error if validation fails
+# 使用自動驗證儲存（複製回原始目錄）
+doc.save()  # 預設會驗證，如果驗證失敗會拋出錯誤
 
-# Save to different location
+# 儲存到不同位置
 doc.save('modified-unpacked')
 
-# Skip validation (debugging only - needing this in production indicates XML issues)
+# 跳過驗證（僅用於除錯 - 在生產環境中需要此設定表示 XML 有問題）
 doc.save(validate=False)
 ```
 
-### Direct DOM Manipulation
+### 直接 DOM 操作
 
-For complex scenarios not covered by the library:
+對於函式庫未涵蓋的複雜情況：
 
 ```python
-# Access any XML file
+# 存取任何 XML 檔案
 editor = doc["word/document.xml"]
 editor = doc["word/comments.xml"]
 
-# Direct DOM access (defusedxml.minidom.Document)
+# 直接 DOM 存取（defusedxml.minidom.Document）
 node = doc["word/document.xml"].get_node(tag="w:p", line_number=5)
 parent = node.parentNode
 parent.removeChild(node)
-parent.appendChild(node)  # Move to end
+parent.appendChild(node)  # 移到結尾
 
-# General document manipulation (without tracked changes)
+# 一般文件操作（不含追蹤修訂）
 old_node = doc["word/document.xml"].get_node(tag="w:p", contains="original text")
 doc["word/document.xml"].replace_node(old_node, "<w:p><w:r><w:t>replacement text</w:t></w:r></w:p>")
 
-# Multiple insertions - use return value to maintain order
+# 多次插入 - 使用傳回值維持順序
 node = doc["word/document.xml"].get_node(tag="w:r", line_number=100)
 nodes = doc["word/document.xml"].insert_after(node, "<w:r><w:t>A</w:t></w:r>")
 nodes = doc["word/document.xml"].insert_after(nodes[-1], "<w:r><w:t>B</w:t></w:r>")
 nodes = doc["word/document.xml"].insert_after(nodes[-1], "<w:r><w:t>C</w:t></w:r>")
-# Results in: original_node, A, B, C
+# 結果：original_node, A, B, C
 ```
 
-## Tracked Changes (Redlining)
+## 追蹤修訂（紅線標記）
 
-**Use the Document class above for all tracked changes.** The patterns below are for reference when constructing replacement XML strings.
+**對所有追蹤修訂使用上面的 Document 類別。** 下面的模式是在構建替換 XML 字串時的參考。
 
-### Validation Rules
-The validator checks that the document text matches the original after reverting Claude's changes. This means:
-- **NEVER modify text inside another author's `<w:ins>` or `<w:del>` tags**
-- **ALWAYS use nested deletions** to remove another author's insertions
-- **Every edit must be properly tracked** with `<w:ins>` or `<w:del>` tags
+### 驗證規則
+驗證器檢查文件文字在還原 Claude 的變更後是否與原始相符。這意味著：
+- **永遠不要修改其他作者的 `<w:ins>` 或 `<w:del>` 標籤內的文字**
+- **務必使用嵌套刪除**來移除其他作者的插入
+- **每個編輯都必須正確追蹤**使用 `<w:ins>` 或 `<w:del>` 標籤
 
-### Tracked Change Patterns
+### 追蹤修訂模式
 
-**CRITICAL RULES**:
-1. Never modify the content inside another author's tracked changes. Always use nested deletions.
-2. **XML Structure**: Always place `<w:del>` and `<w:ins>` at paragraph level containing complete `<w:r>` elements. Never nest inside `<w:r>` elements - this creates invalid XML that breaks document processing.
+**關鍵規則**：
+1. 永遠不要修改其他作者追蹤修訂內的內容。務必使用嵌套刪除。
+2. **XML 結構**：始終將 `<w:del>` 和 `<w:ins>` 放在段落層級，包含完整的 `<w:r>` 元素。永遠不要嵌套在 `<w:r>` 元素內 - 這會建立破壞文件處理的無效 XML。
 
-**Text Insertion:**
+**文字插入：**
 ```xml
 <w:ins w:id="1" w:author="Claude" w:date="2025-07-30T23:05:00Z" w16du:dateUtc="2025-07-31T06:05:00Z">
   <w:r w:rsidR="00792858">
@@ -576,7 +576,7 @@ The validator checks that the document text matches the original after reverting
 </w:ins>
 ```
 
-**Text Deletion:**
+**文字刪除：**
 ```xml
 <w:del w:id="2" w:author="Claude" w:date="2025-07-30T23:05:00Z" w16du:dateUtc="2025-07-31T06:05:00Z">
   <w:r w:rsidDel="00792858">
@@ -585,9 +585,9 @@ The validator checks that the document text matches the original after reverting
 </w:del>
 ```
 
-**Deleting Another Author's Insertion (MUST use nested structure):**
+**刪除其他作者的插入（必須使用嵌套結構）：**
 ```xml
-<!-- Nest deletion inside the original insertion -->
+<!-- 將刪除嵌套在原始插入內 -->
 <w:ins w:author="Jane Smith" w:id="16">
   <w:del w:author="Claude" w:id="40">
     <w:r><w:delText>monthly</w:delText></w:r>
@@ -598,9 +598,9 @@ The validator checks that the document text matches the original after reverting
 </w:ins>
 ```
 
-**Restoring Another Author's Deletion:**
+**還原其他作者的刪除：**
 ```xml
-<!-- Leave their deletion unchanged, add new insertion after it -->
+<!-- 保持他們的刪除不變，在其後新增插入 -->
 <w:del w:author="Jane Smith" w:id="50">
   <w:r><w:delText>within 30 days</w:delText></w:r>
 </w:del>
